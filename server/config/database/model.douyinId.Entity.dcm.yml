@@ -1,0 +1,146 @@
+model\douyinId\Entity:
+  type: entity
+  table: t_douyin_id
+  id:
+    seq:
+      type: integer
+      options:
+        unsigned: true
+        comment: '序号'
+      generator:
+        strategy: AUTO
+  fields:
+    open_id:
+      unique: true
+      type: string
+      length: 255
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '唯一标识'
+    access_token:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '接口调用凭证'
+    expires_in:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: 'access_token接口调用凭证过期时间'
+    refresh_token:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '用户刷新access_token'
+    refresh_expires_in:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: 'refresh_token凭证过期时间'
+    scope:
+      type: json_array
+      nullable: false
+      options: 
+        comment: '用户授权的作用域(Scope)，使用逗号（,）分隔，开放平台几乎几乎每个接口都需要特定的Scope。'
+    province:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: ''
+    union_id:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '用户在当前开发者账号下的唯一标识（未绑定开发者账号没有该字段）'
+    avatar:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: ''
+    e_account_role:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '类型: * `EAccountM` - 普通企业号 * `EAccountS` - 认证企业号 * `EAccountK` - 品牌企业号'
+    nickname:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: ''
+    city:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: ''
+    country:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: ''
+    gender:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '性别: * `0` - 未知 * `1` - 男性 * `2` - 女性'
+    create_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '添加时间'
+    create_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '添加人ip'
+    update_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '修改时间'
+    update_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '修改人ip'
+    version:
+      type: smallint
+      version: true
+      options:
+        unsigned: true      
+        default: '0'

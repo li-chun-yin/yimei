@@ -1,0 +1,97 @@
+model\upload\Entity:
+  type: entity
+  table: t_upload
+  id:
+    seq:
+      type: integer
+      options:
+        unsigned: true
+        comment: '序号'
+      generator:
+        strategy: AUTO
+  fields:
+    upload_id:
+      unique: true
+      type: string
+      length: 32
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: 'id'
+    original_name:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '文件原名'
+    extension:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '扩展类型'
+    mime_type:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '扩展类型'
+    size:
+      type: bigint
+      nullable: false
+      options:
+        unsigned: true
+        default: '0'
+        comment: '文件大小'
+    path:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '文件路径'
+    type:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '文件的种类如:1:image'
+    create_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '添加时间'
+    create_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        default: ''
+        comment: '添加人ip'
+    update_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '修改时间'
+    update_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        default: ''
+        comment: '修改人ip'
+    version:
+      type: smallint
+      version: true
+      options:
+        unsigned: true      
+        default: '0'

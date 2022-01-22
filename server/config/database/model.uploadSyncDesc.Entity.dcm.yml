@@ -1,0 +1,81 @@
+model\uploadSyncDesc\Entity:
+  type: entity
+  table: t_upload_sync_desc
+  id:
+    seq:
+      type: integer
+      options:
+        unsigned: true
+        comment: '序号'
+      generator:
+        strategy: AUTO
+  fields:
+    upload_id:
+      unique: true
+      type: string
+      length: 32
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: 'id'
+    original_name:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '文件原名'
+    mime_type:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '扩展类型'
+    size:
+      type: bigint
+      nullable: false
+      options:
+        unsigned: true
+        default: '0'
+        comment: '文件大小'
+    path:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        default: ''
+        comment: '文件路径'
+    status:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '设置类型：如0:未发布,1:已发布,2:部分发布,3:发布中'
+    sync_data:
+      type: json_array
+      nullable: false
+      options: 
+        comment: '一件发布请求数据'
+    create_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '添加时间'
+    update_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '修改时间'
+    version:
+      type: smallint
+      version: true
+      options:
+        unsigned: true      
+        default: '0'

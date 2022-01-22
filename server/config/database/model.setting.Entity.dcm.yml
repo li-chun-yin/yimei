@@ -1,0 +1,61 @@
+model\setting\Entity:
+  type: entity
+  table: t_setting
+  id:
+    seq:
+      type: integer
+      options:
+        unsigned: true
+        comment: '序号'
+      generator:
+        strategy: AUTO
+  fields:
+    type:
+      type: smallint
+      nullable: false
+      unique: true
+      options:
+        default: '0'
+        unsigned: true
+        comment: '设置类型：如1:douyin'
+    data:
+      type: json_array
+      nullable: false
+      options: 
+        comment: '设置信息'
+    create_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '添加时间'
+    create_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '添加人ip'
+    update_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '修改时间'    
+    update_ip:
+      type: string
+      length: 45
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '修改人ip'
+    version:
+      type: smallint
+      version: true
+      options:
+        unsigned: true      
+        default: '0'

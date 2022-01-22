@@ -1,0 +1,75 @@
+model\uploadSync\Entity:
+  type: entity
+  table: t_upload_sync
+  uniqueConstraints:
+    ux_upload_sync:
+      columns: [ type, upload_id, unikey ]
+  id:
+    seq:
+      type: integer
+      options:
+        unsigned: true
+        comment: '序号'
+      generator:
+        strategy: AUTO
+  fields:
+    upload_id:
+      type: string
+      length: 32
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: 'upload id'
+    unikey:
+      type: string
+      length: 255
+      nullable: false
+      options:
+        fixed: true
+        default: ''
+        comment: '唯一键，如douyin的open id'
+    type:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '设置类型：如0:抖音'
+    status:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '设置类型：如0:进行中,1:完成上传'
+    sync_request:
+      type: json_array
+      nullable: false
+      options: 
+        comment: '请求同步的数据'
+    sync_response:
+      type: json_array
+      nullable: false
+      options: 
+        comment: '响应同步的数据'
+    create_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '添加时间'
+    update_time:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '修改时间'
+    version:
+      type: smallint
+      version: true
+      options:
+        unsigned: true      
+        default: '0'
