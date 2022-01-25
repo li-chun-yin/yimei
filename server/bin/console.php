@@ -15,7 +15,7 @@ use asbamboo\session\SessionInterface;
 use AppKernel;
 
 $_SERVER['SERVER_NAME'] = 'bin.console';
-$autoload               = require_once dirname(dirname(__DIR__)) . '/core/vendor/autoload.php';
+$autoload               = require_once dirname(__DIR__) . '/vendor/autoload.php';
 $autoload->addPsr4('', dirname(__DIR__));
 
 /**

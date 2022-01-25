@@ -20,7 +20,7 @@ class Vars
         "DB_DRIVER"                         => "pdo_mysql",
         "DB_HOST"                           => "127.0.0.1",
         "DB_PORT"                           => "3306",
-        "DB_NAME"                           => "aggregate",
+        "DB_NAME"                           => "yimei",
         "DB_USER"                           => "root",
         "DB_PASSWORD"                       => "root",
         "DB_CHARSET"                        => "utf8mb4",
@@ -50,7 +50,9 @@ class Vars
 
     private function __construct()
     {
-        $this->parameters   = json_decode(file_get_contents($this->getJsonPath()), true);
+        if(is_readable($this->getJsonPath())){
+            $this->parameters   = json_decode(file_get_contents(), true);
+        }
     }
 
     public static function instance() : self
