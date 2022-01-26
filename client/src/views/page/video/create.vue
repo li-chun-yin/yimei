@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Card, UploadDragger, message } from 'ant-design-vue'
+import { Card, Upload, message } from 'ant-design-vue'
 import { PageWrapper } from '/@/components/Page'
 import { router } from '/@/router';
 import { getVideoCreateUrl } from '/@/api/page/video';
@@ -41,7 +41,7 @@ export default defineComponent({
   components: { 
     PageWrapper,
     [Card.name]: Card,
-    [UploadDragger.name]: UploadDragger,
+    [Upload.UploadDragger.name]: Upload.UploadDragger,
   },
   setup() {
     const handleChange = (info: {file: { status:string, name: string }, fileList: []}) => {

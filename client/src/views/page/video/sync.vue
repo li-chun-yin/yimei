@@ -141,7 +141,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, unref } from 'vue'
 import { useDebounceFn } from '@vueuse/core';
-import { Card, CardMeta, Tabs, List, ListItem, Avatar, Upload, Form, FormItem, Textarea, Button, Image } from 'ant-design-vue'
+import { Card, CardMeta, Tabs, List, ListItem, Avatar, Upload, Form, FormItem, Input, Button, Image } from 'ant-design-vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { PageWrapper } from '/@/components/Page'
 import { Time } from '/@/components/Time';
@@ -170,7 +170,7 @@ export default defineComponent({
     [Upload.name]: Upload,
     [Form.name]: Form,
     [FormItem.name]: FormItem,
-    [Textarea.name]: Textarea,
+    [Input.TextArea.name]: Input.TextArea,
     [Button.name]: Button,
     [Image.name]: Image
   },
