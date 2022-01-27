@@ -10,6 +10,8 @@ use model\setting\Code;
 use model\douyinId\Manager AS DouyinIdManager;
 use model\douyinId\Repository AS DouyinIdRepository;
 use asbamboo\database\FactoryInterface;
+use asbamboo\http\Response;
+use asbamboo\http\Stream;
 
 class Douyin extends ControllerAbstract
 {
@@ -29,9 +31,13 @@ class Douyin extends ControllerAbstract
         $target_uri         = $Request->getRequestParam('state');
         $code               = $Request->getRequestParam('code');
         $time               = time();
+        if(empty($target_uri)){
+            $Stream     = new Stream('php://temp', 'w+b');
+            $Stream->write('<script type="text/javascript">window.close();</script>');
+            return new Response($Stream);
+        }
         
         $DouyinSettingEntity    = $SettingManager->loadByType(Code::TYPE_DOUYIN);
-        
         
         $OauthAccessTokenResponse   = ApiClient::request('OauthAccessToken', [
             'client_key'            => $DouyinSettingEntity->getData()['client_key'],
@@ -83,6 +89,11 @@ class Douyin extends ControllerAbstract
 
         $Db->getManager()->flush();
         
+        if(empty($target_uri)){
+            $Stream     = new Stream('php://temp', 'w+b');
+            $Stream->write("<script>if(opener)opener.reload(); window.close();</script>");
+            return new Response($Stream);
+        }
         return new RedirectResponse($target_uri);
     }
 }

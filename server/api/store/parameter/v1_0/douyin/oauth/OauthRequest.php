@@ -15,5 +15,5 @@ class OauthRequest extends ApiRequestParamsAbstract
      * @example
      * @var string
      */
-    public $redirect_url;
+    public $redirect_url = '';
 }

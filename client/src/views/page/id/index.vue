@@ -6,14 +6,10 @@
         抖音账号
       </template>
       <template #extra>
-        <form :action="oauthFormData.url">
-          <input type="hidden" :value="oauthFormData.api_name" name="api_name" />
-          <input type="hidden" :value="oauthFormData.redirect_url" name="redirect_url" />
-          <a-button htmlType="submit">添加账号</a-button>
-        </form>
+        <a-button @click="openBindWindow">添加账号</a-button>
       </template>
 
-      <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: grid }" :dataSource="douyinIds.items">
+      <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 12 }" :dataSource="douyinIds.items">
         <template #renderItem="{ item }">
           <a-list-item>
             <a-card>
@@ -50,8 +46,21 @@
     setup() {
       const oauthFormData = getDouyinOauthFormData()
       console.log(oauthFormData)
+      const openBindWindow = () => {
+        const win = window.open(oauthFormData.url + '?api_name=' + oauthFormData.api_name, '_new_oauth', 'width=800,height=650')
+        const testWinExist = () => {
+          console.log('testWinExist', win)
+          if( win && win.closed == false ){
+            win.focus()
+            setTimeout(testWinExist, 500)
+          } else {
+            location.reload()
+          }         
+        }
+        testWinExist()
+      }
 
-      return { oauthFormData }
+      return { openBindWindow }
     },
     data() {
       let douyinIds : GetDouyinIdResponse = {"items": [], "total": 0}      

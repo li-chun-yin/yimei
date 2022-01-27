@@ -51,7 +51,7 @@ class Vars
     private function __construct()
     {
         if(is_readable($this->getJsonPath())){
-            $this->parameters   = json_decode(file_get_contents(), true);
+            $this->parameters   = json_decode(file_get_contents($this->getJsonPath()), true);
         }
     }
 
