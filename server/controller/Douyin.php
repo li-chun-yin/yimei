@@ -31,11 +31,6 @@ class Douyin extends ControllerAbstract
         $target_uri         = $Request->getRequestParam('state');
         $code               = $Request->getRequestParam('code');
         $time               = time();
-        if(empty($target_uri)){
-            $Stream     = new Stream('php://temp', 'w+b');
-            $Stream->write('<script type="text/javascript">window.close();</script>');
-            return new Response($Stream);
-        }
         
         $DouyinSettingEntity    = $SettingManager->loadByType(Code::TYPE_DOUYIN);
         
@@ -91,7 +86,7 @@ class Douyin extends ControllerAbstract
         
         if(empty($target_uri)){
             $Stream     = new Stream('php://temp', 'w+b');
-            $Stream->write("<script>if(opener)opener.reload(); window.close();</script>");
+            $Stream->write('<script type="text/javascript">window.close();</script>');
             return new Response($Stream);
         }
         return new RedirectResponse($target_uri);
