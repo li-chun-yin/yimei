@@ -1,7 +1,8 @@
 <template>
-  <PageWrapper>
+  <PageWrapper class="video-create-page">
     <a-card title="上传视频" :bordered="false">
-      <a-upload-dragger
+      <a-upload
+        class="c-upload"
         name="file"
         :action="getVideoCreateUrl"
         accept="video/*"
@@ -11,19 +12,20 @@
           <span class="iconify" data-icon="ant-design:cloud-upload-outlined" data-width="200" data-height="200" style="margin:auto"></span>
         </p>
         <p class="ant-upload-text">单击或拖动文件到此区域上传</p>
-        <p class="ant-upload-hint">
-          支持常用视频格式，推荐使用 mp4 、webm。
-        </p>
-        <p class="ant-upload-hint">
-          视频文件大小不超过4GB，时长在15分钟以内。
-        </p>
-        <p class="ant-upload-hint">
-          为了更好的观看体验，推荐上传16:9，分辨率为720p（1280x720）及以上的竖版视频。
-        </p>
-        <p class="ant-upload-hint">
-          带品牌logo或品牌水印的视频，会命中抖音的审核逻辑，有比较大的概率导致分享视频推荐降权处理/分享视频下架处理/分享账号被封禁处理。
-        </p>
-      </a-upload-dragger>
+      </a-upload>
+      <p class="ant-upload-hint"></p>
+      <p class="ant-upload-hint">
+        支持常用视频格式，推荐使用 mp4 、webm。
+      </p>
+      <p class="ant-upload-hint">
+        视频文件大小不超过4GB，时长在15分钟以内。
+      </p>
+      <p class="ant-upload-hint">
+        为了更好的观看体验，推荐上传16:9，分辨率为720p（1280x720）及以上的竖版视频。
+      </p>
+      <p class="ant-upload-hint">
+        带品牌logo或品牌水印的视频，会命中抖音的审核逻辑，有比较大的概率导致分享视频推荐降权处理/分享视频下架处理/分享账号被封禁处理。
+      </p>
     </a-card>
   </PageWrapper>
 </template>
@@ -35,13 +37,12 @@ import { PageWrapper } from '/@/components/Page'
 import { router } from '/@/router';
 import { getVideoCreateUrl } from '/@/api/page/video';
 
-
 export default defineComponent({
   name: 'VideoCreatePage',
   components: { 
     PageWrapper,
     [Card.name]: Card,
-    [Upload.UploadDragger.name]: Upload.UploadDragger,
+    [Upload.name]: Upload
   },
   setup() {
     const handleChange = (info: {file: { status:string, name: string }, fileList: []}) => {
@@ -65,3 +66,15 @@ export default defineComponent({
   }
 })
 </script>
+<style lang="less">
+.video-create-page {
+  .c-upload {
+    
+    text-align:center;
+
+    .ant-upload  {
+      width: 100%;
+    }
+  }
+}
+</style>

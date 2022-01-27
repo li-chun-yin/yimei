@@ -28,6 +28,10 @@
 /client/*.sln
 /client/*.sw?
 
+/client/_electron/node_modules
+/client/_electron/dist
+/client/_electron/out
+
 /server/.project
 /server/_dev
 /server/vars
