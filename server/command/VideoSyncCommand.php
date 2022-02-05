@@ -12,12 +12,14 @@ use model\uploadSyncDesc\Manager AS UploadSyncDescManager;
 use model\uploadSync\Entity AS UploadSyncEntity;
 use model\uploadSyncDesc\Entity AS UploadSyncDescEntity;
 use model\douyinId\Repository AS DouyinIdRepository;
+use model\toutiaoId\Repository AS ToutiaoIdRepository;
+use model\xiguaId\Repository AS XiguaIdRepository;
 use model\upload\Repository AS UploadRepository;
 use library\douyin\ApiClient;
 use library\model\UploadSyncDescStatus;
 
 /**
- * 添加新用户
+ * 视频发布到第三方平台
  *
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年11月28日
@@ -26,8 +28,10 @@ class VideoSyncCommand extends CommandAbstract
 {
     use ContainerAwareTrait;
     
-    const DOUYIN_SPLIT_SIZE  = 5 * 1024 * 1024;
-
+    const DOUYIN_SPLIT_SIZE     = 5 * 1024 * 1024;
+    const TOUTIAO_SPLIT_SIZE    = 5 * 1024 * 1024;
+    const XIGUA_SPLIT_SIZE      = 5 * 1024 * 1024;
+    
     /**
      *
      * @var FactoryInterface
@@ -94,7 +98,7 @@ class VideoSyncCommand extends CommandAbstract
                         }
                         
                         $UploadSyncManager->load($UploadSyncEntity);
-                        $sync_response  = $this->{'sync' . Code::TYPE_DOUYIN}($UploadSyncEntity, $UploadSyncDescEntity, $Processor);
+                        $sync_response  = $this->{'sync' . $UploadSyncEntity->getType()}($UploadSyncEntity, $UploadSyncDescEntity, $Processor);
                         $UploadSyncManager->updateSyncDone([
                             'sync_response' => $sync_response,
                         ]);
@@ -105,7 +109,8 @@ class VideoSyncCommand extends CommandAbstract
                             );
                     }
                     
-                    $this->Db->getManager()->getUnitOfWork()->clear(get_class($UploadSyncEntity));
+                    $this->Db->getManager()->getUnitOfWork()->clear();
+                    $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncDescEntity->getUploadId());
                     $UploadSyncDescStatus->check($UploadSyncDescEntity);
                     $this->Db->getManager()->flush();                    
                 }
@@ -166,6 +171,8 @@ class VideoSyncCommand extends CommandAbstract
                     'mime_type'             => $UploadSyncDescEntity->getMimeType(),
                     'filepath'              => $tmpfname,
                 ]);
+                
+                unlink($tmpfname);
             }
             $VideoPartCompleteResponse  = ApiClient::request('VideoPartComplete', [
                 'open_id'               => $DouyinIdEntity->getOpenId(),
@@ -199,8 +206,159 @@ class VideoSyncCommand extends CommandAbstract
             'video_id'                  => $video_id,
             'text'                      => $UploadSyncEntity->getSyncRequest()['text'],
             'custom_cover_image_url'    => $custom_cover_image_url,
-            'poi_id'                    => $UploadSyncEntity->getSyncRequest()['poi_id'],
-            'poi_name'                  => $UploadSyncEntity->getSyncRequest()['poi_name'],
+            'poi_id'                    => $UploadSyncEntity->getSyncRequest()['poi_id'] ?? '',
+            'poi_name'                  => $UploadSyncEntity->getSyncRequest()['poi_name'] ?? '',
+        ]);
+        
+        return [
+            'VideoCreateResponse'       => $VideoCreateResponse
+        ];
+    }
+    
+    /**
+     * 今日头条类型的同步
+     */
+    private function sync1(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
+    {
+        $split_num          = floor($UploadSyncDescEntity->getSize() / self::TOUTIAO_SPLIT_SIZE);
+        
+        /**
+         *
+         * @var ToutiaoIdRepository $ToutiaoIdRepository
+         */
+        $ToutiaoIdRepository = $this->Container->get(ToutiaoIdRepository::class);
+        $ToutiaoIdEntity     = $ToutiaoIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        
+        $video_id           = '';
+        if($split_num < 2){
+            $VideoUploadResponse        = ApiClient::request('ToutiaoVideoUpload', [
+                'open_id'               => $ToutiaoIdEntity->getOpenId(),
+                'access_token'          => $ToutiaoIdEntity->getAccessToken(),
+                'filename'              => $UploadSyncDescEntity->getOriginalName(),
+                'mime_type'             => $UploadSyncDescEntity->getMimeType(),
+                'filepath'              => \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath(),
+            ]);
+            $video_id   = $VideoUploadResponse->get('video')['video_id'];
+        }else{
+            $VideoPartInitResponse      = ApiClient::request('ToutiaoVideoPartInit', [
+                'open_id'               => $ToutiaoIdEntity->getOpenId(),
+                'access_token'          => $ToutiaoIdEntity->getAccessToken(),
+            ]);
+            
+            for($i = 1; $i <= $split_num; $i ++){
+                $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
+                $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
+                $path       = \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath();
+                $f          = fopen($path, "rb");
+                $contents   = stream_get_contents($f, $maxlength, $offset);
+                $tmpfname   = tempnam(\Constant::UPLOAD_ROOT_PATH, 'tmpf');
+                $handle     = fopen($tmpfname, "w");
+                fwrite($handle, $contents);
+                fclose($handle);
+                
+                
+                $VideoPartUploadResponse    = ApiClient::request('ToutiaoVideoPartUpload', [
+                    'open_id'               => $ToutiaoIdEntity->getOpenId(),
+                    'access_token'          => $ToutiaoIdEntity->getAccessToken(),
+                    'upload_id'             => $VideoPartInitResponse->get('upload_id'),
+                    'part_number'           => $i,
+                    'filename'              => $UploadSyncDescEntity->getOriginalName(),
+                    'mime_type'             => $UploadSyncDescEntity->getMimeType(),
+                    'filepath'              => $tmpfname,
+                ]);
+                
+                unlink($tmpfname);
+            }
+            $VideoPartCompleteResponse  = ApiClient::request('ToutiaoVideoPartComplete', [
+                'open_id'               => $ToutiaoIdEntity->getOpenId(),
+                'access_token'          => $ToutiaoIdEntity->getAccessToken(),
+                'upload_id'             => $VideoPartInitResponse->get('upload_id'),
+            ]);
+            $video_id   = $VideoPartCompleteResponse->get('video')['video_id'];
+        }
+        
+        $VideoCreateResponse            = ApiClient::request('ToutiaoVideoCreate', [
+            'open_id'                   => $ToutiaoIdEntity->getOpenId(),
+            'access_token'              => $ToutiaoIdEntity->getAccessToken(),
+            'video_id'                  => $video_id,
+            'text'                      => $UploadSyncEntity->getSyncRequest()['text'],
+        ]);
+        
+        return [
+            'VideoCreateResponse'       => $VideoCreateResponse
+        ];
+    }
+    
+    /**
+     * 西瓜视频的同步
+     */
+    private function sync2(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
+    {
+        $split_num          = floor($UploadSyncDescEntity->getSize() / self::XIGUA_SPLIT_SIZE);
+        
+        /**
+         *
+         * @var XiguaIdRepository $XiguaIdRepository
+         */
+        $XiguaIdRepository = $this->Container->get(XiguaIdRepository::class);
+        $XiguaIdEntity     = $XiguaIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        
+        $video_id           = '';
+        if($split_num < 2){
+            $VideoUploadResponse        = ApiClient::request('XiguaVideoUpload', [
+                'open_id'               => $XiguaIdEntity->getOpenId(),
+                'access_token'          => $XiguaIdEntity->getAccessToken(),
+                'filename'              => $UploadSyncDescEntity->getOriginalName(),
+                'mime_type'             => $UploadSyncDescEntity->getMimeType(),
+                'filepath'              => \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath(),
+            ]);
+            $video_id   = $VideoUploadResponse->get('video')['video_id'];
+        }else{
+            $VideoPartInitResponse      = ApiClient::request('XiguaVideoPartInit', [
+                'open_id'               => $XiguaIdEntity->getOpenId(),
+                'access_token'          => $XiguaIdEntity->getAccessToken(),
+            ]);
+            
+            for($i = 1; $i <= $split_num; $i ++){
+                $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
+                $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
+                $path       = \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath();
+                $f          = fopen($path, "rb");
+                $contents   = stream_get_contents($f, $maxlength, $offset);
+                $tmpfname   = tempnam(\Constant::UPLOAD_ROOT_PATH, 'tmpf');
+                $handle     = fopen($tmpfname, "w");
+                fwrite($handle, $contents);
+                fclose($handle);
+                
+                
+                $VideoPartUploadResponse    = ApiClient::request('XiguaVideoPartUpload', [
+                    'open_id'               => $XiguaIdEntity->getOpenId(),
+                    'access_token'          => $XiguaIdEntity->getAccessToken(),
+                    'upload_id'             => $VideoPartInitResponse->get('upload_id'),
+                    'part_number'           => $i,
+                    'filename'              => $UploadSyncDescEntity->getOriginalName(),
+                    'mime_type'             => $UploadSyncDescEntity->getMimeType(),
+                    'filepath'              => $tmpfname,
+                ]);
+                
+                unlink($tmpfname);
+            }
+            $VideoPartCompleteResponse  = ApiClient::request('XiguaVideoPartComplete', [
+                'open_id'               => $XiguaIdEntity->getOpenId(),
+                'access_token'          => $XiguaIdEntity->getAccessToken(),
+                'upload_id'             => $VideoPartInitResponse->get('upload_id'),
+            ]);
+            $video_id   = $VideoPartCompleteResponse->get('video')['video_id'];
+        }
+        
+        $VideoCreateResponse            = ApiClient::request('XiguaVideoCreate', [
+            'open_id'                   => $XiguaIdEntity->getOpenId(),
+            'access_token'              => $XiguaIdEntity->getAccessToken(),
+            'video_id'                  => $video_id,
+            'text'                      => $UploadSyncEntity->getSyncRequest()['text'] ?? '',
+            'abstract'                  => $UploadSyncEntity->getSyncRequest()['abstract'] ?? '',
+            'claim_origin'              => $UploadSyncEntity->getSyncRequest()['claim_origin'] ?? false,
+            'praise'                    => $UploadSyncEntity->getSyncRequest()['praise'] ?? false,
         ]);
         
         return [
@@ -228,7 +386,7 @@ HELP;
      */
     public function desc(): string
     {
-        return '视频同步';
+        return '视频发布';
     }
 
     /**

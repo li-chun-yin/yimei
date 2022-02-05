@@ -24,6 +24,13 @@ class SyncBasicRequest extends ApiRequestParamsAbstract
     public $text;
 
     /**
+     * @desc 简介 abstract
+     * @example 简介
+     * @var string
+     */
+    public $abstract;
+    
+    /**
      * @desc 位置poi id 
      * @example 
      * @var string
@@ -43,4 +50,18 @@ class SyncBasicRequest extends ApiRequestParamsAbstract
      * @var string
      */
     public $cover_image_upload_id;
+    
+    /**
+     * @desc 是否原创 claim_origin
+     * @example 0
+     * @var boolean
+     */
+    public $claim_origin;
+
+    /**
+     * @desc 赞赏入口 praise
+     * @example 0
+     * @var boolean
+     */
+    public $praise;
 }

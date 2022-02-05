@@ -4,6 +4,8 @@ namespace  library\model;
 use model\uploadSyncDesc\Entity AS UploadSyncDescEntity;
 use asbamboo\di\ContainerAwareTrait;
 use model\douyinId\Repository AS DouyinIdRepository;
+use model\toutiaoId\Repository AS ToutiaoIdRepository;
+use model\xiguaId\Repository AS XiguaIdRepository;
 use model\uploadSync\Repository AS UploadSyncRepository;
 use model\uploadSync\Code AS UploadSyncCode;
 use model\uploadSyncDesc\Code AS UploadSyncDescCode;
@@ -20,7 +22,7 @@ class UploadSyncDescStatus
     /**
      * 核对 $UploadSyncDescEntity 的 status 值。并且调用数据更新方法。
      * 但如果更新的数据需要持久化，那么需要在这个方法调用后，继续调用database的flush方法
-     *  - 1. 如果 UploadSync 数据， 
+     *  - 1. 如果 没有 UploadSync 数据， 
      *       那么 UploadSyncDesc 的状态是 UploadSyncDescCode::STATUS_WAIT
      *  - 2. 如果 UploadSync 数据含有 UploadSyncCode::STATUS_ING， 
      *  -    那么 UploadSyncDesc 的状态是 UploadSyncDescCode::STATUS_ING
@@ -40,6 +42,9 @@ class UploadSyncDescStatus
         $UploadSyncRepository   = $this->Container->get(UploadSyncRepository::class);
         $UploadSyncDescManager  = $this->Container->get(UploadSyncDescManager::class);
         $sync_open_ids          = $this->getSyncOpenIds();
+        $sync_toutiao_open_ids  = $this->getSyncToutiaoOpenIds();
+        $sync_xigua_open_ids    = $this->getSyncXiguaOpenIds();
+        $sync_total             = count($sync_open_ids) + count($sync_toutiao_open_ids) + count($sync_xigua_open_ids);
         $UploadSyncDescManager->load($UploadSyncDescEntity);
         
         $status                 = UploadSyncDescCode::STATUS_WAIT;
@@ -50,7 +55,25 @@ class UploadSyncDescStatus
                 $status = UploadSyncDescCode::STATUS_ING;
                 break;
             }
-            if($UploadSyncEntity->getStatus() == UploadSyncCode::STATUS_DONE && in_array($UploadSyncEntity->getUnikey(), $sync_open_ids)){
+            
+            if(     $UploadSyncEntity->getType() == UploadSyncCode::TYPE_DOUYIN
+                &&  $UploadSyncEntity->getStatus() == UploadSyncCode::STATUS_DONE
+                &&  in_array($UploadSyncEntity->getUnikey(), $sync_open_ids
+            )){
+                $synced_count ++;
+            }
+            
+            if(     $UploadSyncEntity->getType() == UploadSyncCode::TYPE_TOUTIAO
+                &&  $UploadSyncEntity->getStatus() == UploadSyncCode::STATUS_DONE
+                &&  in_array($UploadSyncEntity->getUnikey(), $sync_toutiao_open_ids
+            )){
+                $synced_count ++;
+            }
+            
+            if(     $UploadSyncEntity->getType() == UploadSyncCode::TYPE_XIGUA
+                &&  $UploadSyncEntity->getStatus() == UploadSyncCode::STATUS_DONE
+                &&  in_array($UploadSyncEntity->getUnikey(), $sync_xigua_open_ids
+            )){
                 $synced_count ++;
             }
         }
@@ -59,14 +82,13 @@ class UploadSyncDescStatus
             $UploadSyncDescManager->updateStatusIng(['sync_data' => $UploadSyncDescEntity->getSyncData()]);
         }
         
-        
-        if($status != UploadSyncDescCode::STATUS_ING && $synced_count > 0 && $synced_count < count($sync_open_ids)){
+        if($status != UploadSyncDescCode::STATUS_ING && $synced_count > 0 && $synced_count < $sync_total){
             $UploadSyncDescManager->updateStatusPart();
         }
 
-        if($status != UploadSyncDescCode::STATUS_ING && $synced_count == count($sync_open_ids)){
+        if($status != UploadSyncDescCode::STATUS_ING && $synced_count >= $sync_total){
             $UploadSyncDescManager->updateStatusDone();
-        }        
+        }
     }
     
     private function getSyncOpenIds()
@@ -77,5 +99,26 @@ class UploadSyncDescStatus
          */
         $DouyinIdRepository = $this->Container->get(DouyinIdRepository::class);
         return $DouyinIdRepository->getAllOpenIds();
+    }
+
+
+    private function getSyncToutiaoOpenIds()
+    {
+        /**
+         *
+         * @var ToutiaoIdRepository $ToutiaoIdRepository
+         */
+        $ToutiaoIdRepository = $this->Container->get(ToutiaoIdRepository::class);
+        return $ToutiaoIdRepository->getAllOpenIds();
+    }
+    
+    private function getSyncXiguaOpenIds()
+    {
+        /**
+         *
+         * @var XiguaIdRepository $XiguaIdRepository
+         */
+        $XiguaIdRepository = $this->Container->get(XiguaIdRepository::class);
+        return $XiguaIdRepository->getAllOpenIds();
     }
 }

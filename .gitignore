@@ -33,8 +33,12 @@
 /client/_electron/out
 
 /server/.project
+/server/.buildpath
+/server/.settings
 /server/_dev
 /server/vars
 /server/vars.json
 /server/upload
 /server/vendor
+
+/.metadata/

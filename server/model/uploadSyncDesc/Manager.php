@@ -96,10 +96,13 @@ class Manager
     public function updateSyncData(array $data) : Manager
     {
         $this->Entity->setSyncData(array_merge($this->Entity->getSyncData(), [
-            'text'                  => isset($data['text']) ? $data['text'] : $this->Entity->getSyncData()['text'],
-            'poi_id'                => isset($data['poi_id']) ? $data['poi_id'] : $this->Entity->getSyncData()['poi_id'],
-            'poi_name'              => isset($data['poi_name']) ? $data['poi_name'] : $this->Entity->getSyncData()['poi_name'],
-            'cover_image_upload_id' => isset($data['cover_image_upload_id']) ? $data['cover_image_upload_id'] : $this->Entity->getSyncData()['cover_image_upload_id'],
+            'text'                  => isset($data['text']) ? $data['text'] : ($this->Entity->getSyncData()['text'] ?? ''),
+            'abstract'              => isset($data['abstract']) ? $data['abstract'] : ($this->Entity->getSyncData()['abstract'] ?? ''),
+            'poi_id'                => isset($data['poi_id']) ? $data['poi_id'] : ($this->Entity->getSyncData()['poi_id'] ?? ''),
+            'poi_name'              => isset($data['poi_name']) ? $data['poi_name'] : ($this->Entity->getSyncData()['poi_name'] ?? ''),
+            'cover_image_upload_id' => isset($data['cover_image_upload_id']) ? $data['cover_image_upload_id'] : ($this->Entity->getSyncData()['cover_image_upload_id'] ?? ''),
+            'claim_origin'          => isset($data['claim_origin']) ? $data['claim_origin'] : ($this->Entity->getSyncData()['claim_origin'] ?? false),
+            'praise'                => isset($data['praise']) ? $data['praise'] : ($this->Entity->getSyncData()['praise'] ?? false),
         ]));
         
         $this->validateUpdateSyncData();

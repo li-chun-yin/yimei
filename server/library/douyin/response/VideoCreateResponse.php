@@ -1,8 +1,6 @@
 <?php
 namespace library\douyin\response;
 
-use exception\SystemException;
-
 /**
  *
  * @author 李春寅 <licy2013@aliyun.com>

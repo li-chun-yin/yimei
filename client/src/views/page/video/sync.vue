@@ -2,8 +2,21 @@
   <PageWrapper class="video-sync">
     <a-card title="基本信息" :bordered="false">
       <video v-if="video.url" :src="video.url" controls="controls" class="video" />
-      <a-form :model="syncDescFormConfig" :label-col="{span: 3}" :wrapper-col="{span: 10}" class="batch-form">
-        <a-form-item label="视频封面" class="batch-video-cover-image">
+      <a-form :model="syncDescFormConfig" :label-col="{span: 4}" class="batch-form">
+
+        <a-form-item label="视频标题" class="batch-video-text" required help="用于所有自媒体平台">
+          <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.text}}</template>
+          <a-textarea v-else v-model:value="syncDescFormConfig.text" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="batch-video-text-area" />
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetText" class="batch-video-text-button">批量设置</a-button>
+        </a-form-item>
+
+        <a-form-item label="视频简介" class="batch-video-abstract" help="用于西瓜视频">
+          <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.abstract}}</template>
+          <a-textarea v-else v-model:value="syncDescFormConfig.abstract" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="batch-video-abstract-area" />
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetAbstract" class="batch-video-abstract-button">批量设置</a-button>
+        </a-form-item>
+
+        <a-form-item label="视频封面" class="batch-video-cover-image" help="用于抖音">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">
             <div class="image-box">
               <a-image v-if="syncDescFormConfig.cover_image_url" :src="syncDescFormConfig.cover_image_url" class="image"></a-image>
@@ -33,13 +46,7 @@
           </template>
         </a-form-item>
 
-        <a-form-item label="视频标题" class="batch-video-text" required>
-          <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.text}}</template>
-          <a-textarea v-else v-model:value="syncDescFormConfig.text" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autosize="{minRows: 3, maxRows: 3}" class="batch-video-text-area" />
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetText" class="batch-video-text-button">批量设置</a-button>
-        </a-form-item>
-
-        <a-form-item label="抖音位置" class="batch-video-poi">
+        <a-form-item label="抖音位置" class="batch-video-poi" help="用于抖音">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.poi_name}}</template>
           <ApiSelect
             v-else
@@ -57,6 +64,19 @@
           />
           <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPoi" class="batch-video-poi-button">批量设置</a-button>
         </a-form-item>
+
+        <a-form-item label="是否原创" class="batch-video-origin" help="用于西瓜视频">
+          <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.claim_origin == true ? '是' : '否' }}</template>
+          <a-switch v-else checked-children="是" un-checked-children="否" v-model:checked="syncDescFormConfig.claim_origin" @change="syncDescFormConfig.doPostVideoSyncBasic"></a-switch>
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetClaimOrigin" class="batch-video-origin-button">批量设置</a-button>
+        </a-form-item>
+
+        <a-form-item label="赞赏入口" class="batch-video-praise" help="用于西瓜视频">
+          <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.praise == true ? '开' : '关' }}</template>
+          <a-switch v-else checked-children="开" un-checked-children="关" v-model:checked="syncDescFormConfig.praise" @change="syncDescFormConfig.doPostVideoSyncBasic"></a-switch>
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPraise" class="batch-video-praise-button">批量设置</a-button>
+        </a-form-item>
+
         <a-form-item :colon="false" label=" ">
           <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSync" type="primary" shape="round" size="large" block>一键发布</a-button>
         </a-form-item>
@@ -64,20 +84,27 @@
     </a-card>
 
     <a-card title="自媒体账号" :bordered="false" class="!mt-5 sync-ids">
-      <a-list :dataSource="douyins">
+      <a-list :dataSource="syncIds">
         <template #renderItem="{ item }">
-          <a-list-item class="list-item">
+          <a-list-item class="list-item" v-if="item.type=='douyin'">
             <a-card class="card">
               <a-card-meta :title="item.id.nickname">
                 <template #avatar>
                   <a-avatar :src="item.id.avatar" />
                 </template>
                 <template #description>
+                  <a-tag v-if="item.type=='douyin'" color="#2db7f5">抖音</a-tag>
                   <Time :value="item.id.update_time" />
                 </template>
               </a-card-meta>
               
               <a-form :model="item" :label-col="{span: 7}" class="sync-form">
+
+                <a-form-item label="视频标题" required>
+                  <template v-if="item.sync_status != -1">{{item.text}}</template>
+                  <a-textarea v-else v-model:value="item.text" showCount :autoSize="{minRows: 3, maxRows: 3}" />
+                </a-form-item>
+
                 <a-form-item label="视频封面" class="sync-video-cover-image">
                   <template v-if="item.sync_status != -1">
                     <div class="image-box">
@@ -104,11 +131,6 @@
                   <a-button v-if="item.sync_status == -1" @click="item.onRemoveCoverImage">重新设置</a-button>
                 </a-form-item>
 
-                <a-form-item label="视频标题" required>
-                  <template v-if="item.sync_status != -1">{{item.text}}</template>
-                  <a-textarea v-else v-model:value="item.text" showCount :autosize="{minRows: 3, maxRows: 3}" />
-                </a-form-item>
-
                 <a-form-item label="位置">
                   <template v-if="item.sync_status != -1">{{item.poi_name}}</template>
                   <ApiSelect
@@ -132,6 +154,73 @@
               </a-form>
             </a-card>
           </a-list-item>
+
+          <a-list-item class="list-item" v-if="item.type=='toutiao'">
+            <a-card class="card">
+              <a-card-meta :title="item.id.nickname">
+                <template #avatar>
+                  <a-avatar :src="item.id.avatar" />
+                </template>
+                <template #description>
+                  <a-tag v-if="item.type=='toutiao'" color="#87d068">今日头条</a-tag>
+                  <Time :value="item.id.update_time" />
+                </template>
+              </a-card-meta>
+              
+              <a-form :model="item" :label-col="{span: 7}" class="sync-form">
+
+                <a-form-item label="视频标题" required>
+                  <template v-if="item.sync_status != -1">{{item.text}}</template>
+                  <a-textarea v-else v-model:value="item.text" showCount :autoSize="{minRows: 3, maxRows: 3}" />
+                </a-form-item>
+
+                <a-button v-if="item.sync_status == SYNC_STATUS.ING" disabled block shape="round">发布中...</a-button>
+                <a-button v-else-if="item.sync_status == SYNC_STATUS.DONE" disabled block shape="round">已经发布</a-button>
+                <a-button v-else @click="item.onSync" :loading="item.loading" block shape="round">立即发布</a-button>
+              </a-form>
+            </a-card>
+          </a-list-item>
+
+          <a-list-item class="list-item" v-if="item.type=='xigua'">
+            <a-card class="card">
+              <a-card-meta :title="item.id.nickname">
+                <template #avatar>
+                  <a-avatar :src="item.id.avatar" />
+                </template>
+                <template #description>
+                  <a-tag v-if="item.type=='xigua'" color="#108ee9">西瓜视频</a-tag>
+                  <Time :value="item.id.update_time" />
+                </template>
+              </a-card-meta>
+              
+              <a-form :model="item" :label-col="{span: 7}" class="sync-form">
+
+                <a-form-item label="视频标题" required>
+                  <template v-if="item.sync_status != -1">{{item.text}}</template>
+                  <a-textarea v-else v-model:value="item.text" showCount :autoSize="{minRows: 3, maxRows: 3}" />
+                </a-form-item>
+
+                <a-form-item label="视频简介">
+                  <template v-if="item.sync_status != -1">{{item.abstract}}</template>
+                  <a-textarea v-else v-model:value="item.abstract" showCount :autoSize="{minRows: 3, maxRows: 3}" />
+                </a-form-item>
+
+                <a-form-item label="是否原创">
+                  <template v-if="item.sync_status != -1">{{item.claim_origin == true ? '是' : '否' }}</template>
+                  <a-switch v-else checked-children="是" un-checked-children="否" v-model:checked="item.claim_origin"></a-switch>
+                </a-form-item>
+
+                <a-form-item label="赞赏入口">
+                  <template v-if="item.sync_status != -1">{{item.praise == true ? '开' : '关' }}</template>
+                  <a-switch v-else checked-children="开" un-checked-children="关" v-model:checked="item.praise"></a-switch>
+                </a-form-item>
+
+                <a-button v-if="item.sync_status == SYNC_STATUS.ING" disabled block shape="round">发布中...</a-button>
+                <a-button v-else-if="item.sync_status == SYNC_STATUS.DONE" disabled block shape="round">已经发布</a-button>
+                <a-button v-else @click="item.onSync" :loading="item.loading" block shape="round">立即发布</a-button>
+              </a-form>
+            </a-card>
+          </a-list-item>
         </template>
       </a-list>
     </a-card>
@@ -139,9 +228,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, unref } from 'vue'
+import { defineComponent, computed, ref, unref} from 'vue'
 import { useDebounceFn } from '@vueuse/core';
-import { Card, CardMeta, Tabs, List, ListItem, Avatar, Upload, Form, FormItem, Input, Button, Image } from 'ant-design-vue'
+import { 
+  Card, 
+  CardMeta, 
+  Tabs, 
+  List, 
+  ListItem, 
+  Avatar, 
+  Upload, 
+  Form, 
+  FormItem, 
+  Input, 
+  Button, 
+  Image, 
+  Tag, 
+  Switch 
+} from 'ant-design-vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { PageWrapper } from '/@/components/Page'
 import { Time } from '/@/components/Time';
@@ -151,6 +255,8 @@ import { getDouyinIdLists, searchDouyiPois } from '/@/api/page/douyin'
 import { getVideoInfo, postVideoSync, postVideoSyncBasic } from '/@/api/page/video'
 import{ SYNC_TYPE, SYNC_STATUS, VIDEO_INDEX_STATUS } from '/@/api/page/model/videoModel'
 import { useGlobSetting } from '/@/hooks/setting';
+import { getToutiaoIdLists } from '/@/api/page/toutiao';
+import { getXiguaIdLists } from '/@/api/page/xigua';
 
 export default defineComponent({
   name: 'VideoSyncPage',
@@ -171,8 +277,10 @@ export default defineComponent({
     [Form.name]: Form,
     [FormItem.name]: FormItem,
     [Input.TextArea.name]: Input.TextArea,
+    [Switch.name]: Switch,
     [Button.name]: Button,
-    [Image.name]: Image
+    [Image.name]: Image,
+    [Tag.name]: Tag
   },
   setup() {
   	
@@ -195,7 +303,7 @@ export default defineComponent({
       UPLOAD_URL: useGlobSetting().uploadUrl,
       searchDouyiPois,
       searchPoiParams,
-      onSearchPoiList: useDebounceFn(onSearchPoiList, 300),
+      onSearchPoiList: useDebounceFn(onSearchPoiList, 300)
     }
   },
   data() {
@@ -207,22 +315,28 @@ export default defineComponent({
         id: params.id
       },
       syncs: {},
-      douyins: [],
+      syncIds: [],
       syncDescFormConfig: {
         sync_status: -1,
         text: '',
-        cover_image_url: '',
-        cover_image_upload_id: undefined,
-        poi_id: undefined,
-        poi_name: '',
+        abstract: '', //视频简介 西瓜
+        claim_origin: false, //声明原创 西瓜
+        praise: false, //赞赏入口 西瓜
+        cover_image_url: '', // 抖音
+        cover_image_upload_id: undefined, // 抖音
+        poi_id: undefined,// 抖音
+        poi_name: '', // 抖音
         loading: false,
         doPostVideoSyncBasic: () => {
           postVideoSyncBasic({
             upload_id: this.video.id,
             text: this.syncDescFormConfig.text,
+            abstract: this.syncDescFormConfig.abstract,
             cover_image_upload_id: this.syncDescFormConfig.cover_image_upload_id,
             poi_id: this.syncDescFormConfig.poi_id,
-            poi_name: this.syncDescFormConfig.poi_name
+            poi_name: this.syncDescFormConfig.poi_name,
+            claim_origin: this.syncDescFormConfig.claim_origin,
+            praise: this.syncDescFormConfig.praise,
           })
         },
         onChangeCustomCoverImage: (info) => {
@@ -245,38 +359,54 @@ export default defineComponent({
           this.syncDescFormConfig.doPostVideoSyncBasic()
         },
         onBatchSetCoverImage: () => {
-          for(let i in this.douyins){
-            if(this.douyins[i].sync_status != -1){
-              continue
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setCoverImage == 'function'){
+              this.syncIds[i].setCoverImage()
             }
-            this.douyins[i].cover_image_upload_id = this.syncDescFormConfig.cover_image_upload_id
-            this.douyins[i].cover_image_url = this.syncDescFormConfig.cover_image_url
           }
         },
         onBatchSetText: () => {
-          for(let i in this.douyins){
-            if(this.douyins[i].sync_status != -1){
-              continue
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setText == 'function'){
+              this.syncIds[i].setText()
             }
-            this.douyins[i].text = this.syncDescFormConfig.text
+          }
+        },
+        onBatchSetAbstract: () => {
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setAbstract == 'function'){
+              this.syncIds[i].setAbstract()
+            }
           }
         },
         onBatchSetPoi: () => {
-          for(let i in this.douyins){
-            if(this.douyins[i].sync_status != -1){
-              continue
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setPoi == 'function'){
+              this.syncIds[i].setPoi()
             }
-            this.douyins[i].poi_id = this.syncDescFormConfig.poi_id
-            this.douyins[i].poi_name = this.syncDescFormConfig.poi_name
+          }
+        },
+        onBatchSetClaimOrigin: () => {
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setClaimOrigin == 'function'){
+              this.syncIds[i].setClaimOrigin()
+            }
+          }
+        },
+        onBatchSetPraise: () => {
+          for(let i in this.syncIds){
+            if(typeof this.syncIds[i].setPraise == 'function'){
+              this.syncIds[i].setPraise()
+            }
           }
         },
         onBatchSync: () => {
-          for(let i in this.douyins){
-            console.log(this.douyins[i])
-            if(this.douyins[i].sync_status != -1){
+          for(let i in this.syncIds){
+            console.log(this.syncIds[i])
+            if(this.syncIds[i].sync_status != -1){
               continue
             }
-            this.douyins[i].onSync()
+            this.syncIds[i].onSync()
           }
         }
       }
@@ -288,17 +418,23 @@ export default defineComponent({
       this.syncs      = res.syncs;
       this.syncDescFormConfig.sync_status = res.sync_desc.status
       this.syncDescFormConfig.text = res.sync_desc.sync_data.text
+      this.syncDescFormConfig.abstract = res.sync_desc.sync_data.abstract
       this.syncDescFormConfig.poi_id = res.sync_desc.sync_data.poi_id
       this.syncDescFormConfig.poi_name = res.sync_desc.sync_data.poi_name
       this.syncDescFormConfig.cover_image_upload_id = res.sync_desc.sync_data.cover_image_upload_id
       this.syncDescFormConfig.cover_image_url = res.sync_desc.sync_data.cover_image_url
+      this.syncDescFormConfig.claim_origin = res.sync_desc.sync_data.claim_origin
+      this.syncDescFormConfig.praise = res.sync_desc.sync_data.praise
       console.log(this.syncs);
     })
 
-    getDouyinIdLists().then((res) => {
+    let SyncIdPushedCount = 0;
+    await getDouyinIdLists().then((res) => {
       for(let i in res.items) {
         let key = SYNC_TYPE.DOUYIN + '_' + res.items[i].open_id
-        this.douyins.push({
+        let syncIdPutIndex = i;
+        this.syncIds.push({
+          type: 'douyin',
           id: res.items[i],
           cover_image_url: this.syncs[key] ? this.syncs[key].sync_request.cover_image_url : '',
           cover_image_upload_id: this.syncs[key] ? this.syncs[key].sync_request.cover_image_upload_id : '',
@@ -307,47 +443,176 @@ export default defineComponent({
           poi_id: this.syncs[key] ? this.syncs[key].sync_request.poi_id : undefined,
           poi_name: this.syncs[key] ? this.syncs[key].sync_request.poi_name : '',
           sync_status: this.syncs[key] ? this.syncs[key].status : -1,
+          setText: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].text = this.syncDescFormConfig.text
+          },
+          setCoverImage: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].cover_image_upload_id = this.syncDescFormConfig.cover_image_upload_id
+            this.syncIds[syncIdPutIndex].cover_image_url = this.syncDescFormConfig.cover_image_url
+          },
+          setPoi: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].poi_id = this.syncDescFormConfig.poi_id
+            this.syncIds[syncIdPutIndex].poi_name = this.syncDescFormConfig.poi_name
+        },
           onChangeCustomCoverImage: (info) => {
             if(info.file.status == 'done') {
-              this.douyins[i].cover_image_url = info.file.response.data.url
-              this.douyins[i].cover_image_upload_id = info.file.response.data.id
+              this.syncIds[syncIdPutIndex].cover_image_url = info.file.response.data.url
+              this.syncIds[syncIdPutIndex].cover_image_upload_id = info.file.response.data.id
             }
-            console.log(this.douyins[i], info)
+            console.log(this.syncIds[syncIdPutIndex], info)
           },
           onRemoveCoverImage: () => {
-              this.douyins[i].cover_image_url = ''
-              this.douyins[i].cover_image_upload_id = undefined
+              this.syncIds[syncIdPutIndex].cover_image_url = ''
+              this.syncIds[syncIdPutIndex].cover_image_upload_id = undefined
           },
           onChangePoi: ( value:string, option ) => {
             console.log(option)
-            this.douyins[i].poi_id = value
-            this.douyins[i].poi_name = option.label
+            this.syncIds[syncIdPutIndex].poi_id = value
+            this.syncIds[syncIdPutIndex].poi_name = option.label
           },
           onSync: async (event) => {
-            console.log('syncing')
-            this.douyins[i].loading = true;
+            console.log('syncing', syncIdPutIndex, this.syncIds[syncIdPutIndex])
+            this.syncIds[syncIdPutIndex].loading = true;
             try {
-              console.log(this.douyins[i], this.video)
+              console.log(this.syncIds[syncIdPutIndex], this.video)
               await postVideoSync({
-                unikey: this.douyins[i].id.open_id,
+                unikey: this.syncIds[syncIdPutIndex].id.open_id,
                 upload_id: this.video.id,
                 type: SYNC_TYPE.DOUYIN,
                 sync_request: {
-                  text: this.douyins[i].text,
-                  poi_id: this.douyins[i].poi_id,
-                  poi_name: this.douyins[i].poi_name,
-                  cover_image_upload_id: this.douyins[i].cover_image_upload_id
+                  text: this.syncIds[syncIdPutIndex].text,
+                  poi_id: this.syncIds[syncIdPutIndex].poi_id,
+                  poi_name: this.syncIds[syncIdPutIndex].poi_name,
+                  cover_image_upload_id: this.syncIds[syncIdPutIndex].cover_image_upload_id
                 }
               })
-              this.douyins[i].sync_status = SYNC_STATUS.ING
-              this.douyins[i].loading = false;
+              this.syncIds[syncIdPutIndex].sync_status = SYNC_STATUS.ING
+              this.syncIds[syncIdPutIndex].loading = false;
             } catch (error) {
-              this.douyins[i].loading = false;
+              this.syncIds[syncIdPutIndex].loading = false;
               console.log(error)
             }
           }
         })
       }
+      SyncIdPushedCount = SyncIdPushedCount + parseInt(res.items.length, 10)
+    })
+
+    await getToutiaoIdLists().then((res) => {
+      for(let i in res.items) {
+        let key = SYNC_TYPE.TOUTIAO + '_' + res.items[i].open_id
+        let syncIdPutIndex = parseInt(i, 10) + parseInt(SyncIdPushedCount, 10);
+        console.log(syncIdPutIndex, this.syncIds);
+        this.syncIds.push({
+          type: 'toutiao',
+          id: res.items[i],
+          loading: false,
+          text: this.syncs[key] ? this.syncs[key].sync_request.text : '',
+          sync_status: this.syncs[key] ? this.syncs[key].status : -1,
+          setText: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].text = this.syncDescFormConfig.text
+          },
+          onSync: async (event) => {
+            console.log('syncing', syncIdPutIndex, this.syncIds[syncIdPutIndex])
+            this.syncIds[syncIdPutIndex].loading = true;
+            try {
+              console.log(this.syncIds[syncIdPutIndex], this.video)
+              await postVideoSync({
+                unikey: this.syncIds[syncIdPutIndex].id.open_id,
+                upload_id: this.video.id,
+                type: SYNC_TYPE.TOUTIAO,
+                sync_request: {
+                  text: this.syncIds[syncIdPutIndex].text,
+                }
+              })
+              this.syncIds[syncIdPutIndex].sync_status = SYNC_STATUS.ING
+              this.syncIds[syncIdPutIndex].loading = false;
+            } catch (error) {
+              this.syncIds[syncIdPutIndex].loading = false;
+              console.log(error)
+            }
+          }
+        })
+      }
+      SyncIdPushedCount = SyncIdPushedCount + parseInt(res.items.length, 10)
+    })
+
+    await getXiguaIdLists().then((res) => {
+      for(let i in res.items) {
+        let key = SYNC_TYPE.XIGUA + '_' + res.items[i].open_id
+        let syncIdPutIndex = parseInt(i, 10) + parseInt(SyncIdPushedCount, 10);
+        console.log(syncIdPutIndex, this.syncIds);
+        this.syncIds.push({
+          type: 'xigua',
+          id: res.items[i],
+          loading: false,
+          text: this.syncs[key] ? this.syncs[key].sync_request.text : '',
+          abstract: this.syncs[key] ? this.syncs[key].sync_request.abstract : '',
+          claim_origin: this.syncs[key] ? this.syncs[key].sync_request.claim_origin : false,
+          praise: this.syncs[key] ? this.syncs[key].sync_request.praise : false,
+          sync_status: this.syncs[key] ? this.syncs[key].status : -1,
+          setText: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].text = this.syncDescFormConfig.text
+          },
+          setAbstract: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].abstract = this.syncDescFormConfig.abstract
+          },
+          setClaimOrigin: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].claim_origin = this.syncDescFormConfig.claim_origin
+          },
+          setPraise: () => {
+            if(this.syncIds[syncIdPutIndex].sync_status != -1){
+              return
+            }
+            this.syncIds[syncIdPutIndex].praise = this.syncDescFormConfig.praise
+          },
+          onSync: async (event) => {
+            console.log('syncing', syncIdPutIndex, this.syncIds[syncIdPutIndex])
+            this.syncIds[syncIdPutIndex].loading = true;
+            try {
+              console.log(this.syncIds[syncIdPutIndex], this.video)
+              await postVideoSync({
+                unikey: this.syncIds[syncIdPutIndex].id.open_id,
+                upload_id: this.video.id,
+                type: SYNC_TYPE.XIGUA,
+                sync_request: {
+                  text: this.syncIds[syncIdPutIndex].text,
+                  abstract: this.syncIds[syncIdPutIndex].abstract,
+                  claim_origin: this.syncIds[syncIdPutIndex].claim_origin,
+                  praise: this.syncIds[syncIdPutIndex].praise,
+                }
+              })
+              this.syncIds[syncIdPutIndex].sync_status = SYNC_STATUS.ING
+              this.syncIds[syncIdPutIndex].loading = false;
+            } catch (error) {
+              this.syncIds[syncIdPutIndex].loading = false;
+              console.log(error)
+            }
+          }
+        })
+      }
+      SyncIdPushedCount = SyncIdPushedCount + parseInt(res.items.length, 10)
     })
   }
 })
@@ -365,7 +630,8 @@ export default defineComponent({
   }
 
   .batch-form{
-    min-width: 920px;
+    float: left;
+    width: calc(100% - 720px * 0.375);
 
     .batch-video-cover-image {
       .image-box {
@@ -407,10 +673,34 @@ export default defineComponent({
       }
     }
 
+    .batch-video-abstract {
+      .batch-video-abstract-area {
+        width: calc(100% - 90px);
+        float: left;
+      }
+      
+      .batch-video-abstract-button {
+        height: 100%;
+        position: absolute;
+      }
+    }
+
     .batch-video-poi {
       .batch-video-poi-select {
         width: calc(100% - 90px);
         float: left;
+      }
+    }
+
+    .batch-video-origin {
+      .batch-video-origin-button {
+        margin-left: 1em;
+      }
+    }
+
+    .batch-video-praise {
+      .batch-video-praise-button {
+        margin-left: 1em;
       }
     }
   }

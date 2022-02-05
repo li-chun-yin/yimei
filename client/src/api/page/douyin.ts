@@ -41,6 +41,7 @@ export const getDouyinOauthFormData = () => {
   return {
     url: defHttp.options.requestOptions?.apiUrl,
     api_name: 'douyin.oauth',
+    api_toutiao: 'toutiao.oauth',
     redirect_url: location.href,
   }
 }

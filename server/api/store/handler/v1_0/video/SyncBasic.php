@@ -42,10 +42,13 @@ class SyncBasic implements ApiClassInterface
         try {            
             $this->UploadSyncDescManager->load($Params->getUploadId());
             $this->UploadSyncDescManager->updateSyncData([
-                'text'                      => (string) $Params->getText(),
-                'poi_id'                    => (string) $Params->getPoiId(),
-                'poi_name'                  => (string) $Params->getPoiName(),
-                'cover_image_upload_id'     => (string) $Params->getCoverImageUploadId(),
+                'text'                  => (string) $Params->getText(),
+                'abstract'              => (string) $Params->getAbstract(),
+                'poi_id'                => (string) $Params->getPoiId(),
+                'poi_name'              => (string) $Params->getPoiName(),
+                'cover_image_upload_id' => (string) $Params->getCoverImageUploadId(),
+                'claim_origin'          => (boolean) $Params->getClaimOrigin(),
+                'praise'                => (boolean) $Params->getPraise(),
             ]);
             
             $this->Db->getManager()->flush();
