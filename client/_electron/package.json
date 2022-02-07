@@ -1,7 +1,7 @@
 {
-  "name": "my-electron-app",
+  "name": "yimei",
   "version": "1.0.0",
-  "description": "hello word",
+  "description": "一媒工具（名字暂定），计划是做一个聚合自媒体发布工具，把软文，视频等内容同时发布到多个主流平台。",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -19,17 +19,16 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "electron": "^16.0.4"
   },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
-  },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./dist/favicon.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "my_electron_app"
+            "name": "yimei"
           }
         },
         {

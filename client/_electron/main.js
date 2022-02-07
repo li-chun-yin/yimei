@@ -1,12 +1,16 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
+
+Menu.setApplicationMenu(null) // 隐藏菜单栏
 
 function createWindow () {
+
   const win = new BrowserWindow({
-    width: 800,
-    height: 600
+    title: '一媒工具'
   })
 
   win.loadFile('./dist/index.html')
+
+  win.maximize()
 }
 
 app.whenReady().then(() => {
