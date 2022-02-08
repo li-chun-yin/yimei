@@ -6,7 +6,7 @@ export const systemSchemas: FormSchema[] = [
   {
     field: 'api_url',
     component: 'Input',
-    label: 'API URL',
+    label: '服务端API url',
     required: true,
     defaultValue: SYSTEM_API_URL
   }
