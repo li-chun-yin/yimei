@@ -1,12 +1,12 @@
 <template>
-  <PageWrapper class="video-index">
+  <PageWrapper class="c-video-index">
     <a-card :bordered="false" title="视频列表">
       <a-list :dataSource="items" :pagination="paginationProp">
         <template #renderItem="{ item }">
-          <a-list-item class="list-item">
+          <a-list-item class="c-list-item">
             <a-card>
               <template #cover>
-                <video :src="item.url" controls="controls" class="video" />
+                <video :src="item.url" controls="controls" class="c-video" />
               </template>
               <a-card-meta>
                 <template #title>
@@ -82,14 +82,14 @@
 </script>
 
 <style lang="less">
-.video-index{
-  .list-item {
+.c-video-index{
+  .c-list-item {
     float: left;
     margin-right: 15px;
     width: calc(720px * 0.275);
     overflow-x: scroll;
     
-    .video {
+    .c-video {
       width: calc(720px * 0.275);
       height: calc(1280px * 0.275);
       background: black;

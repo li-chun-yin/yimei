@@ -1,25 +1,25 @@
 <template>
-  <PageWrapper class="video-sync">
+  <PageWrapper class="c-video-sync">
     <a-card title="基本信息" :bordered="false">
-      <video v-if="video.url" :src="video.url" controls="controls" class="video" />
-      <a-form :model="syncDescFormConfig" :label-col="{span: 4}" class="batch-form">
+      <video v-if="video.url" :src="video.url" controls="controls" class="c-video" />
+      <a-form :model="syncDescFormConfig" :label-col="{span: 4}" class="c-batch-form">
 
-        <a-form-item label="视频标题" class="batch-video-text" required help="用于所有自媒体平台">
+        <a-form-item label="视频标题" class="c-batch-video-text" required help="用于所有自媒体平台">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.text}}</template>
-          <a-textarea v-else v-model:value="syncDescFormConfig.text" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="batch-video-text-area" />
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetText" class="batch-video-text-button">批量设置</a-button>
+          <a-textarea v-else v-model:value="syncDescFormConfig.text" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="c-area" />
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetText" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="视频简介" class="batch-video-abstract" help="用于西瓜视频">
+        <a-form-item label="视频简介" class="c-batch-video-abstract" help="用于西瓜视频">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.abstract}}</template>
-          <a-textarea v-else v-model:value="syncDescFormConfig.abstract" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="batch-video-abstract-area" />
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetAbstract" class="batch-video-abstract-button">批量设置</a-button>
+          <a-textarea v-else v-model:value="syncDescFormConfig.abstract" @change="syncDescFormConfig.doPostVideoSyncBasic" showCount :autoSize="{minRows: 3, maxRows: 3}" class="c-area" />
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetAbstract" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="视频封面" class="batch-video-cover-image" help="用于抖音">
+        <a-form-item label="视频封面" class="c-batch-video-cover-image" help="用于抖音">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">
-            <div class="image-box">
-              <a-image v-if="syncDescFormConfig.cover_image_url" :src="syncDescFormConfig.cover_image_url" class="image"></a-image>
+            <div class="c-image-box">
+              <a-image v-if="syncDescFormConfig.cover_image_url" :src="syncDescFormConfig.cover_image_url" class="c-image"></a-image>
             </div>
           </template>
           <a-upload
@@ -27,7 +27,7 @@
             name="file"
             accept="image/*"
             list-type="picture-card"
-            class="cover-image-uploader"
+            class="c-cover-image-uploader"
             :show-upload-list="false"
             :action="UPLOAD_URL"
             @change="syncDescFormConfig.onChangeCustomCoverImage"
@@ -46,7 +46,7 @@
           </template>
         </a-form-item>
 
-        <a-form-item label="抖音位置" class="batch-video-poi" help="用于抖音">
+        <a-form-item label="抖音位置" class="c-batch-video-poi" help="用于抖音">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.poi_name}}</template>
           <ApiSelect
             v-else
@@ -60,21 +60,21 @@
             valueField="poi_id"
             @search="onSearchPoiList"
             @change="syncDescFormConfig.onChangePoi"
-            class="batch-video-poi-select"
+            class="c-select"
           />
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPoi" class="batch-video-poi-button">批量设置</a-button>
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPoi" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="是否原创" class="batch-video-origin" help="用于西瓜视频">
+        <a-form-item label="是否原创" class="c-batch-video-origin" help="用于西瓜视频">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.claim_origin == true ? '是' : '否' }}</template>
           <a-switch v-else checked-children="是" un-checked-children="否" v-model:checked="syncDescFormConfig.claim_origin" @change="syncDescFormConfig.doPostVideoSyncBasic"></a-switch>
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetClaimOrigin" class="batch-video-origin-button">批量设置</a-button>
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetClaimOrigin" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="赞赏入口" class="batch-video-praise" help="用于西瓜视频">
+        <a-form-item label="赞赏入口" class="c-batch-video-praise" help="用于西瓜视频">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">{{syncDescFormConfig.praise == true ? '开' : '关' }}</template>
           <a-switch v-else checked-children="开" un-checked-children="关" v-model:checked="syncDescFormConfig.praise" @change="syncDescFormConfig.doPostVideoSyncBasic"></a-switch>
-          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPraise" class="batch-video-praise-button">批量设置</a-button>
+          <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetPraise" class="c-button">批量设置</a-button>
         </a-form-item>
 
         <a-form-item :colon="false" label=" ">
@@ -83,7 +83,7 @@
       </a-form>
     </a-card>
 
-    <a-card title="自媒体账号" :bordered="false" class="!mt-5 sync-ids">
+    <a-card title="自媒体账号" :bordered="false" class="!mt-5 c-sync-ids">
       <a-list :dataSource="syncIds">
         <template #renderItem="{ item, index }">
 
@@ -316,8 +316,8 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.video-sync{
-  .video {
+.c-video-sync {
+  .c-video {
     width: calc(720px * 0.375);
     height: calc(1280px * 0.375);
     background: black;
@@ -326,24 +326,25 @@ export default defineComponent({
     float: left;
   }
 
-  .batch-form{
+  .c-batch-form {
     float: left;
     width: calc(100% - 720px * 0.375);
 
-    .batch-video-cover-image {
-      .image-box {
+    .c-batch-video-cover-image {
+      .c-image-box {
         width: calc(720px * 0.25 * 0.75);
         height: calc(1280px * 0.25 * 0.75);
         border: 1px #f0f0f0 dashed;
         display: contents;
 
-        .iamge {
+        .c-image {
           width: 100%;
+          max-width: calc(720px * 0.25);
           height: 100%;
         }
       }
 
-      .cover-image-uploader {
+      .c-cover-image-uploader {
         width: calc(720px * 0.25 * 0.75 + 16px);
         height: calc(1280px * 0.25 * 0.75 + 16px);
         float: left;
@@ -358,80 +359,80 @@ export default defineComponent({
       }
     }
 
-    .batch-video-text {
-      .batch-video-text-area {
+    .c-batch-video-text {
+      .c-area {
         width: calc(100% - 90px);
         float: left;
       }
       
-      .batch-video-text-button {
+      .c-button {
         height: 100%;
         position: absolute;
       }
     }
 
-    .batch-video-abstract {
-      .batch-video-abstract-area {
+    .c-batch-video-abstract {
+      .c-area {
         width: calc(100% - 90px);
         float: left;
       }
       
-      .batch-video-abstract-button {
+      .c-button {
         height: 100%;
         position: absolute;
       }
     }
 
-    .batch-video-poi {
-      .batch-video-poi-select {
+    .c-batch-video-poi {
+      .c-select {
         width: calc(100% - 90px);
         float: left;
       }
     }
 
-    .batch-video-origin {
-      .batch-video-origin-button {
+    .c-batch-video-origin {
+      .c-button {
         margin-left: 1em;
       }
     }
 
-    .batch-video-praise {
-      .batch-video-praise-button {
+    .c-batch-video-praise {
+      .c-button {
         margin-left: 1em;
       }
     }
   }
 
-  .sync-ids {
-    .list-item {
+  .c-sync-ids {
+    .c-list-item {
       float: left;
       margin-right: 15px;
       padding-top: 0;
 
-      .card {
+      .c-card {
         width:330px;
         height: 560px;
 
-        .sync-form {
+        .c-sync-form {
           margin-top: 15px;
 
-          .sync-video-cover-image {
+          .c-sync-video-cover-image {
             .ant-form-item-control-input-content{
               text-align: center;
 
-              .image-box {
+              .c-image-box {
                 width: calc(720px * 0.25 * 0.75);
                 max-height: calc(1280px * 0.25 * 0.75);
                 border: 1px #f0f0f0 dashed;
                 margin: auto;
 
-                .image {
+                .c-image {
                   width: 100%;
                   height: 100%;
                 }
               }
 
-              .cover-image-uploader {
+              .c-cover-image-uploader {
                 width: calc(720px * 0.175 + 16px);
                 height: calc(1280px * 0.175 + 16px);
 
@@ -452,7 +453,7 @@ export default defineComponent({
       }
     }
 
-    .list-item:last{
+    .c-list-item:last{
       margin-right: 0;
     }
 

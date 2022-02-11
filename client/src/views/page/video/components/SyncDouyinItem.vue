@@ -1,6 +1,6 @@
 <template>
-  <a-list-item class="list-item">
-    <a-card class="card">
+  <a-list-item class="c-list-item">
+    <a-card class="c-card">
       <a-card-meta :title="item.id.nickname">
         <template #avatar>
           <a-avatar :src="item.id.avatar" />
@@ -11,17 +11,17 @@
         </template>
       </a-card-meta>
       
-      <a-form :model="item" :label-col="{span: 7}" class="sync-form">
+      <a-form :model="item" :label-col="{span: 7}" class="c-sync-form">
 
         <a-form-item label="视频标题" required>
           <template v-if="item.sync_status != -1">{{item.text}}</template>
           <a-textarea v-else v-model:value="item.text" showCount :autoSize="{minRows: 3, maxRows: 3}" />
         </a-form-item>
 
-        <a-form-item label="视频封面" class="sync-video-cover-image">
+        <a-form-item label="视频封面" class="c-sync-video-cover-image">
           <template v-if="item.sync_status != -1">
-            <div class="image-box">
-              <a-image v-if="item.cover_image_url" :src="item.cover_image_url" class="image" />
+            <div class="c-image-box">
+              <a-image v-if="item.cover_image_url" :src="item.cover_image_url" class="c-image" />
             </div>
           </template>
           <a-upload
@@ -29,7 +29,7 @@
             name="file"
             accept="image/*"
             list-type="picture-card"
-            class="cover-image-uploader"
+            class="c-cover-image-uploader"
             :show-upload-list="false"
             :action="UPLOAD_URL"
             @change="item.onChangeCustomCoverImage"

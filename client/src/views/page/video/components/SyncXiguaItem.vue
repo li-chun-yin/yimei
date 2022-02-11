@@ -1,6 +1,6 @@
 <template>          
-  <a-list-item class="list-item">
-    <a-card class="card">
+  <a-list-item class="c-list-item">
+    <a-card class="c-card">
       <a-card-meta :title="item.id.nickname">
         <template #avatar>
           <a-avatar :src="item.id.avatar" />
@@ -11,7 +11,7 @@
         </template>
       </a-card-meta>
       
-      <a-form :model="item" :label-col="{span: 7}" class="sync-form">
+      <a-form :model="item" :label-col="{span: 7}" class="c-sync-form">
 
         <a-form-item label="视频标题" required>
           <template v-if="item.sync_status != -1">{{item.text}}</template>
