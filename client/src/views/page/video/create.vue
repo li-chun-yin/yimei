@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper class="video-create-page">
+  <PageWrapper class="c-video-create-page">
     <a-card title="上传视频" :bordered="false">
       <a-upload
         class="c-upload"
@@ -67,7 +67,7 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
-.video-create-page {
+.c-video-create-page {
   .c-upload {
     
     text-align:center;
