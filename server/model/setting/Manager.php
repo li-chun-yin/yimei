@@ -68,7 +68,7 @@ class Manager
             $this->Entity   = $this->Repository->findOneBySeq($account);
             if(empty($this->Entity)){
                 throw new NotFoundSettingException('配置信息不存在。');
-            } 
+            }
         }
         return $this->Entity;
     }
@@ -119,12 +119,58 @@ class Manager
             'access_token'  => $data['access_token'] ?: null,
             'expires_in'    => $data['expires_in'] ?: null,
         ]);
-        
+
         $this->validateUpdateByDouyin();
 
         $this->Entity->setUpdateTime(time());
         $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
-        
+
+        $this->Db->getManager()->lock($this->Entity, LockMode::OPTIMISTIC);
+
+        return $this;
+    }
+
+    /**
+     * 创建数据行
+     *
+     * @return Manager
+     */
+    public function createByKuaishou(array $data) : Manager
+    {
+        $this->Entity->setData([
+            'app_id'        => $data['app_id'],
+            'app_secret'    => $data['app_secret'],
+        ]);
+        $this->Entity->setType(Code::TYPE_KUAISHOU);
+
+        $this->validateCreateByKuaishou();
+
+        $this->Entity->setCreateTime(time());
+        $this->Entity->setCreateIp($this->ServerRequest->getClientIp());
+        $this->Entity->setUpdateTime(time());
+        $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
+
+        $this->Db->getManager()->persist($this->Entity);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return Manager
+     */
+    public function updateByKuaishou(array $data) : Manager
+    {
+        $this->Entity->setData([
+            'app_id'        => $data['app_id'],
+            'app_secret'    => $data['app_secret'],
+        ]);
+
+        $this->validateUpdateByKuaishou();
+
+        $this->Entity->setUpdateTime(time());
+        $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
+
         $this->Db->getManager()->lock($this->Entity, LockMode::OPTIMISTIC);
 
         return $this;
@@ -147,14 +193,14 @@ class Manager
 
         return $this;
     }
-    
-    public function validateCreateByDouyin()
+
+    public function validateCreateByKuaishou()
     {
-        
+
     }
 
-    public function validateUpdateByDouyin()
+    public function validateUpdateByKuaishou()
     {
-        
+
     }
 }
