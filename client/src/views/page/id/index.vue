@@ -1,6 +1,7 @@
 <template>
   <PageWrapper>
     <DouyinId />
+    <KuaishouId />
     <ToutiaoId />
     <XiguaId />
   </PageWrapper>
@@ -9,8 +10,9 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { PageWrapper } from '/@/components/Page'
-  import XiguaId from './components/xigua.vue';
   import DouyinId from './components/douyin.vue';
+  import KuaishouId from './components/kuaishou.vue';
+  import XiguaId from './components/xigua.vue';
   import ToutiaoId from './components/toutiao.vue';
   
 
@@ -19,6 +21,7 @@
     components: { 
       PageWrapper, 
       DouyinId,
+      KuaishouId,
       ToutiaoId,
       XiguaId,
     }

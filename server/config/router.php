@@ -7,5 +7,6 @@ return  [
     ['id' => 'douyin_code', 'path' => '/douyin/code' , 'callback' => 'controller\\Douyin:code'],
     ['id' => 'toutiao_code', 'path' => '/toutiao/code' , 'callback' => 'controller\\Toutiao:code'],
     ['id' => 'xigua_code', 'path' => '/xigua/code' , 'callback' => 'controller\\Xigua:code'],
+    ['id' => 'kuaishou_code', 'path' => '/kuaishou/code' , 'callback' => 'controller\\Kuaishou:code'],
     ['id' => 'upload_read', 'path' => '/upload/read' , 'callback' => 'controller\\Upload:read'],
 ];

@@ -1,7 +1,7 @@
 import { defHttp } from '/@/utils/http/axios';
 import { ErrorMessageMode } from '/#/axios';
 import qs from 'qs'
-import { KuaishouAppModel } from './model/kuaishouModel ';
+import { KuaishouAppModel, GetKuaishouIdResponse } from './model/kuaishouModel';
 
 /**
  * @description: Get kuaishou set info
@@ -30,3 +30,19 @@ export const postKuaishouInfo = (params: KuaishouAppModel, mode: ErrorMessageMod
     },
   );
 }
+
+export const getKuaishouOauthFormData = () => {
+  console.log(defHttp)
+  return {
+    url: defHttp.options.requestOptions?.apiUrl,
+    api_name: 'kuaishou.oauth',
+    redirect_url: location.href,
+  }
+}
+
+export const getKuaishouIdLists = (params = {page : 1, limit : 999999999}) => {
+  return defHttp.get<GetKuaishouIdResponse>({ 
+    url: '',
+    params: { ...params, api_name: 'kuaishou.id-list' }
+  });
+}  

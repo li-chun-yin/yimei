@@ -12,8 +12,8 @@ use api\store\parameter\v1_0\kuaishou\getConfig\GetConfigResponse;
 use model\setting\Repository AS SettingRepository;
 
 /**
- * @name 获取抖音配置
- * @desc 抖音开发配置信息
+ * @name 获取快手配置
+ * @desc 快手开发配置信息
  * @request api\store\parameter\v1_0\kuaishou\getConfig\GetConfigRequest
  * @response api\store\parameter\v1_0\kuaishou\getConfig\GetConfigResponse
  *
