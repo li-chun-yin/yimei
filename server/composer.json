@@ -20,10 +20,11 @@
 		"asbamboo/http" : "dev-master",
 		"asbamboo/router" : "dev-master",
 		"asbamboo/template" : "dev-master",
-		"swiftmailer/swiftmailer" : "^6.2",
+		"swiftmailer/swiftmailer" : "^6.3",
 		"asbamboo/logger": "dev-master",
 		"doctrine/cache": "^2.1",
-		"symfony/cache": "^5.4"
+		"symfony/cache": "^5.4",
+		"symfony/mailer": "^5.4"
 	},
 	"prefer-stable" : true,
 	"minimum-stability" : "dev"

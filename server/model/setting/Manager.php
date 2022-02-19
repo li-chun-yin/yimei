@@ -194,6 +194,16 @@ class Manager
         return $this;
     }
 
+    public function validateCreateByDouyin()
+    {
+        
+    }
+    
+    public function validateUpdateByDouyin()
+    {
+        
+    }
+    
     public function validateCreateByKuaishou()
     {
 
