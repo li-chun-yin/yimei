@@ -14,9 +14,12 @@ use model\uploadSyncDesc\Entity AS UploadSyncDescEntity;
 use model\douyinId\Repository AS DouyinIdRepository;
 use model\toutiaoId\Repository AS ToutiaoIdRepository;
 use model\xiguaId\Repository AS XiguaIdRepository;
+use model\kuaishouId\Repository AS KuaishouIdRepository;
 use model\upload\Repository AS UploadRepository;
 use library\douyin\ApiClient;
 use library\model\UploadSyncDescStatus;
+use model\setting\Repository AS SettingRepository;
+use model\setting\Code AS SettingCode;
 
 /**
  * 视频发布到第三方平台
@@ -27,11 +30,12 @@ use library\model\UploadSyncDescStatus;
 class VideoSyncCommand extends CommandAbstract
 {
     use ContainerAwareTrait;
-    
+
     const DOUYIN_SPLIT_SIZE     = 5 * 1024 * 1024;
     const TOUTIAO_SPLIT_SIZE    = 5 * 1024 * 1024;
     const XIGUA_SPLIT_SIZE      = 5 * 1024 * 1024;
-    
+    const KUAISHOU_SPLIT_SIZE   = 10 * 1024 * 1024;
+
     /**
      *
      * @var FactoryInterface
@@ -68,14 +72,14 @@ class VideoSyncCommand extends CommandAbstract
             $UploadSyncManager      = $this->Container->get(UploadSyncManager::class);
             $UploadSyncDescManager  = $this->Container->get(UploadSyncDescManager::class);
             $UploadSyncDescStatus   = $this->Container->get(UploadSyncDescStatus::class);
-            
+
             /**
              * @var UploadSyncEntity $UploadSyncEntity
              */
-            do{                
+            do{
                 $UploadSyncEntitys      = [];
                 $UploadSyncDescEntity   = null;
-                
+
                 if(empty($upload_id)){
                     $UploadSyncEntity       = $UploadSyncRepository->findOneByStatusIng();
                     if(!empty($UploadSyncEntity)){
@@ -86,7 +90,7 @@ class VideoSyncCommand extends CommandAbstract
                     $UploadSyncEntitys      = $UploadSyncRepository->findByUploadId($upload_id);
                     $UploadSyncDescEntity   = $UploadSyncDescManager->load($upload_id);
                 }
-                
+
                 if(!empty($UploadSyncEntitys)){
                     foreach($UploadSyncEntitys AS $UploadSyncEntity){
                         $Processor->output()->print('正在同步:' . $UploadSyncEntity->getUploadId() . "\r\n");
@@ -96,44 +100,42 @@ class VideoSyncCommand extends CommandAbstract
                             $Processor->output()->print("已经同步过的视频.\r\n");
                             continue;
                         }
-                        
+
                         $UploadSyncManager->load($UploadSyncEntity);
                         $sync_response  = $this->{'sync' . $UploadSyncEntity->getType()}($UploadSyncEntity, $UploadSyncDescEntity, $Processor);
                         $UploadSyncManager->updateSyncDone([
                             'sync_response' => $sync_response,
                         ]);
                         $this->Db->getManager()->flush();
-                        
-                        $Processor->output()->print(
-                            "同步完成.\r\n"
-                            );
+
+                        $Processor->output()->print("同步完成.\r\n");
                     }
-                    
+
                     $this->Db->getManager()->getUnitOfWork()->clear();
                     $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncDescEntity->getUploadId());
                     $UploadSyncDescStatus->check($UploadSyncDescEntity);
-                    $this->Db->getManager()->flush();                    
+                    $this->Db->getManager()->flush();
                 }
-            }while($while); 
+            }while($while);
         }catch(\Throwable $e){
             $Processor->output()->print($e->__toString());
         }
     }
-    
+
     /**
      * 抖音类型的同步
      */
     private function sync0(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
     {
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::DOUYIN_SPLIT_SIZE);
-        
+
         /**
-         * 
+         *
          * @var DouyinIdRepository $DouyinIdRepository
          */
         $DouyinIdRepository = $this->Container->get(DouyinIdRepository::class);
         $DouyinIdEntity     = $DouyinIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
-        
+
         $video_id           = '';
         if($split_num < 2){
             $VideoUploadResponse        = ApiClient::request('VideoUpload', [
@@ -149,7 +151,7 @@ class VideoSyncCommand extends CommandAbstract
                 'open_id'               => $DouyinIdEntity->getOpenId(),
                 'access_token'          => $DouyinIdEntity->getAccessToken(),
             ]);
-            
+
             for($i = 1; $i <= $split_num; $i ++){
                 $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
                 $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
@@ -160,8 +162,8 @@ class VideoSyncCommand extends CommandAbstract
                 $handle     = fopen($tmpfname, "w");
                 fwrite($handle, $contents);
                 fclose($handle);
-                
-                
+
+
                 $VideoPartUploadResponse    = ApiClient::request('VideoPartUpload', [
                     'open_id'               => $DouyinIdEntity->getOpenId(),
                     'access_token'          => $DouyinIdEntity->getAccessToken(),
@@ -171,7 +173,7 @@ class VideoSyncCommand extends CommandAbstract
                     'mime_type'             => $UploadSyncDescEntity->getMimeType(),
                     'filepath'              => $tmpfname,
                 ]);
-                
+
                 unlink($tmpfname);
             }
             $VideoPartCompleteResponse  = ApiClient::request('VideoPartComplete', [
@@ -181,9 +183,9 @@ class VideoSyncCommand extends CommandAbstract
             ]);
             $video_id   = $VideoPartCompleteResponse->get('video')['video_id'];
         }
-        
+
         /**
-         * 
+         *
          * @var UploadRepository $UploadRepository
          */
         $custom_cover_image_url         = null;
@@ -199,7 +201,7 @@ class VideoSyncCommand extends CommandAbstract
             ]);
             $custom_cover_image_url     =  $ImageUploadResponse->get('image')['image_id'];
         }
-        
+
         $VideoCreateResponse            = ApiClient::request('VideoCreate', [
             'open_id'                   => $DouyinIdEntity->getOpenId(),
             'access_token'              => $DouyinIdEntity->getAccessToken(),
@@ -209,26 +211,26 @@ class VideoSyncCommand extends CommandAbstract
             'poi_id'                    => $UploadSyncEntity->getSyncRequest()['poi_id'] ?? '',
             'poi_name'                  => $UploadSyncEntity->getSyncRequest()['poi_name'] ?? '',
         ]);
-        
+
         return [
-            'VideoCreateResponse'       => $VideoCreateResponse
+            'VideoCreateResponse'       => $VideoCreateResponse->get(),
         ];
     }
-    
+
     /**
      * 今日头条类型的同步
      */
     private function sync1(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
     {
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::TOUTIAO_SPLIT_SIZE);
-        
+
         /**
          *
          * @var ToutiaoIdRepository $ToutiaoIdRepository
          */
         $ToutiaoIdRepository = $this->Container->get(ToutiaoIdRepository::class);
         $ToutiaoIdEntity     = $ToutiaoIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
-        
+
         $video_id           = '';
         if($split_num < 2){
             $VideoUploadResponse        = ApiClient::request('ToutiaoVideoUpload', [
@@ -244,7 +246,7 @@ class VideoSyncCommand extends CommandAbstract
                 'open_id'               => $ToutiaoIdEntity->getOpenId(),
                 'access_token'          => $ToutiaoIdEntity->getAccessToken(),
             ]);
-            
+
             for($i = 1; $i <= $split_num; $i ++){
                 $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
                 $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
@@ -255,8 +257,8 @@ class VideoSyncCommand extends CommandAbstract
                 $handle     = fopen($tmpfname, "w");
                 fwrite($handle, $contents);
                 fclose($handle);
-                
-                
+
+
                 $VideoPartUploadResponse    = ApiClient::request('ToutiaoVideoPartUpload', [
                     'open_id'               => $ToutiaoIdEntity->getOpenId(),
                     'access_token'          => $ToutiaoIdEntity->getAccessToken(),
@@ -266,7 +268,7 @@ class VideoSyncCommand extends CommandAbstract
                     'mime_type'             => $UploadSyncDescEntity->getMimeType(),
                     'filepath'              => $tmpfname,
                 ]);
-                
+
                 unlink($tmpfname);
             }
             $VideoPartCompleteResponse  = ApiClient::request('ToutiaoVideoPartComplete', [
@@ -276,33 +278,33 @@ class VideoSyncCommand extends CommandAbstract
             ]);
             $video_id   = $VideoPartCompleteResponse->get('video')['video_id'];
         }
-        
+
         $VideoCreateResponse            = ApiClient::request('ToutiaoVideoCreate', [
             'open_id'                   => $ToutiaoIdEntity->getOpenId(),
             'access_token'              => $ToutiaoIdEntity->getAccessToken(),
             'video_id'                  => $video_id,
             'text'                      => $UploadSyncEntity->getSyncRequest()['text'],
         ]);
-        
+
         return [
-            'VideoCreateResponse'       => $VideoCreateResponse
+            'VideoCreateResponse'       => $VideoCreateResponse->get(),
         ];
     }
-    
+
     /**
      * 西瓜视频的同步
      */
     private function sync2(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
     {
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::XIGUA_SPLIT_SIZE);
-        
+
         /**
          *
          * @var XiguaIdRepository $XiguaIdRepository
          */
         $XiguaIdRepository = $this->Container->get(XiguaIdRepository::class);
         $XiguaIdEntity     = $XiguaIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
-        
+
         $video_id           = '';
         if($split_num < 2){
             $VideoUploadResponse        = ApiClient::request('XiguaVideoUpload', [
@@ -318,7 +320,7 @@ class VideoSyncCommand extends CommandAbstract
                 'open_id'               => $XiguaIdEntity->getOpenId(),
                 'access_token'          => $XiguaIdEntity->getAccessToken(),
             ]);
-            
+
             for($i = 1; $i <= $split_num; $i ++){
                 $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
                 $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
@@ -329,8 +331,8 @@ class VideoSyncCommand extends CommandAbstract
                 $handle     = fopen($tmpfname, "w");
                 fwrite($handle, $contents);
                 fclose($handle);
-                
-                
+
+
                 $VideoPartUploadResponse    = ApiClient::request('XiguaVideoPartUpload', [
                     'open_id'               => $XiguaIdEntity->getOpenId(),
                     'access_token'          => $XiguaIdEntity->getAccessToken(),
@@ -340,7 +342,7 @@ class VideoSyncCommand extends CommandAbstract
                     'mime_type'             => $UploadSyncDescEntity->getMimeType(),
                     'filepath'              => $tmpfname,
                 ]);
-                
+
                 unlink($tmpfname);
             }
             $VideoPartCompleteResponse  = ApiClient::request('XiguaVideoPartComplete', [
@@ -350,7 +352,7 @@ class VideoSyncCommand extends CommandAbstract
             ]);
             $video_id   = $VideoPartCompleteResponse->get('video')['video_id'];
         }
-        
+
         $VideoCreateResponse            = ApiClient::request('XiguaVideoCreate', [
             'open_id'                   => $XiguaIdEntity->getOpenId(),
             'access_token'              => $XiguaIdEntity->getAccessToken(),
@@ -360,9 +362,75 @@ class VideoSyncCommand extends CommandAbstract
             'claim_origin'              => $UploadSyncEntity->getSyncRequest()['claim_origin'] ?? false,
             'praise'                    => $UploadSyncEntity->getSyncRequest()['praise'] ?? false,
         ]);
-        
+
         return [
-            'VideoCreateResponse'       => $VideoCreateResponse
+            'VideoCreateResponse'       => $VideoCreateResponse->get(),
+        ];
+    }
+
+    /**
+     * 快手的同步
+     */
+    private function sync3(UploadSyncEntity $UploadSyncEntity, UploadSyncDescEntity $UploadSyncDescEntity, ProcessorInterface $Processor)
+    {
+        $split_num          = floor($UploadSyncDescEntity->getSize() / self::KUAISHOU_SPLIT_SIZE);
+
+        /**
+         * @var SettingRepository $SettingRepository
+         * @var KuaishouIdRepository $KuaishouIdRepository
+         */
+        $SettingRepository      = $this->Container->get(SettingRepository::class);
+        $KuaishouIdRepository   = $this->Container->get(KuaishouIdRepository::class);
+        $KuaishouIdEntity       = $KuaishouIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        $SettingEntity          = $SettingRepository->findOneByType(SettingCode::TYPE_KUAISHOU);
+//@TODO
+        $OpenapiPhotoStartUploadResonse = ApiClient::request('OpenapiPhotoStartUpload', [
+            'app_id'                    => $SettingEntity->getData()['app_id'],
+            'access_token'              => $KuaishouIdEntity->getAccessToken(),
+        ]);
+
+        $video_id           = '';
+        if($split_num < 2){
+            $ApiUploadMultipartResponse = ApiClient::request('ApiUploadMultipart', [
+                'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
+                'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
+                'filename'              => $UploadSyncDescEntity->getOriginalName(),
+                'mime_type'             => $UploadSyncDescEntity->getMimeType(),
+                'filepath'              => \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath(),
+            ]);
+        }else{
+            for($i = 0; $i < $split_num; $i++ ){
+                $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
+                $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
+                $path       = \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath();
+                $f          = fopen($path, "rb");
+                $contents   = stream_get_contents($f, $maxlength, $offset);
+
+                $ApiUploadFragmentResponse  = ApiClient::request('ApiUploadFragment', [
+                    'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
+                    'fragment_id'           => $i,
+                    'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
+                    'contents'              => $contents,
+                ]);
+
+            }
+            $ApiUploadCompleteResponse  = ApiClient::request('ApiUploadComplete', [
+                'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
+                'fragment_count'        => $split_num,
+                'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
+            ]);
+        }
+
+        $OpenapiPhotoPublishResponse    = ApiClient::request('OpenapiPhotoPublish', [
+            'app_id'                    => $SettingEntity->getData()['app_id'],
+            'access_token'              => $KuaishouIdEntity->getAccessToken(),
+            'upload_token'              => $OpenapiPhotoStartUploadResonse->get('upload_token'),
+            'cover'                     => $UploadSyncEntity->getSyncRequest()['cover'],
+            'caption'                   => $UploadSyncEntity->getSyncRequest()['caption'],
+        ]);
+
+        return [
+            'OpenapiPhotoPublishResponse'   => $OpenapiPhotoPublishResponse->get(),
         ];
     }
 

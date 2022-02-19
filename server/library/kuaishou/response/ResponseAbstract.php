@@ -33,10 +33,11 @@ abstract class ResponseAbstract implements ResponseInterface
      * {@inheritDoc}
      * @see ResponseInterface::get()
      */
-    public function get(string $key)
+    public function get(string $key = null)
     {
-        return $this->data[$key];
+        return is_null($key) ? $this->data : $this->data[$key];
     }
+
     /**
      * 解析响应
      *

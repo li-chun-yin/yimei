@@ -8,7 +8,7 @@ use exception\SystemException;
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年11月3日
  */
-class OauthUserInfoResponse extends ResponseAbstract
+class OpenapiUserInfoResponse extends ResponseAbstract
 {
     /**
      *

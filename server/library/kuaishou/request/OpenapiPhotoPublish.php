@@ -7,12 +7,12 @@ use library\kuaishou\request\tool\CreateRequestTrait;
 use library\kuaishou\request\tool\UriTrait;
 
 /**
- * 换取应用授权令牌
+ * 发起上传
  *
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年11月3日
  */
-class OauthAccessToken implements RequestInterface
+class OpenapiPhotoPublish implements RequestInterface
 {
     use GatewayUriTrait;
     use BodyTrait;
@@ -24,15 +24,7 @@ class OauthAccessToken implements RequestInterface
      *
      * @var string
      */
-    private $path = '/oauth2/access_token/';
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        $this->method('GET');
-    }
+    private $path = '/openapi/photo/publish';
 
     /**
      *
@@ -41,10 +33,20 @@ class OauthAccessToken implements RequestInterface
      */
     public function assignData(array $assign_data): RequestInterface
     {
-        $this->query_data['app_secret'] = $assign_data['app_secret'];
-        $this->query_data['code']       = $assign_data['code'];
-        $this->query_data['grant_type'] = $assign_data['grant_type'] ?? 'authorization_code';
-        $this->query_data['app_id']     = $assign_data['app_id'];
+        $this->query_data['app_id']         = $assign_data['app_id'];
+        $this->query_data['access_token']   = $assign_data['access_token'];
+        $this->query_data['upload_token']   = $assign_data['upload_token'];
+
+        unset($assign_data['app_id'], $assign_data['access_token'], $assign_data['upload_token']);
+
+        $this->assign_data['cover']         = $assign_data['cover'];
+        $this->assign_data['caption']       = $assign_data['caption'];
+
+        foreach(['stereo_type', 'merchant_product_id'] AS $feild){
+            if(array_key_exists($feild, $assign_data)){
+                $this->assign_data[$feild]   = $assign_data[$feild];
+            }
+        }
 
         return $this;
     }

@@ -7,12 +7,12 @@ use library\kuaishou\request\tool\CreateRequestTrait;
 use library\kuaishou\request\tool\UriTrait;
 
 /**
- * 换取用户授权信息
+ * 换取应用授权令牌
  *
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年11月3日
  */
-class OauthUserInfo implements RequestInterface
+class Oauth2AccessToken implements RequestInterface
 {
     use GatewayUriTrait;
     use BodyTrait;
@@ -24,7 +24,7 @@ class OauthUserInfo implements RequestInterface
      *
      * @var string
      */
-    private $path = '/openapi/user_info';
+    private $path = '/oauth2/access_token/';
 
     /**
      *
@@ -41,8 +41,10 @@ class OauthUserInfo implements RequestInterface
      */
     public function assignData(array $assign_data): RequestInterface
     {
-        $this->query_data['app_id']         = $assign_data['app_id'];
-        $this->query_data['access_token']   = $assign_data['access_token'];
+        $this->query_data['app_secret'] = $assign_data['app_secret'];
+        $this->query_data['code']       = $assign_data['code'];
+        $this->query_data['grant_type'] = $assign_data['grant_type'] ?? 'authorization_code';
+        $this->query_data['app_id']     = $assign_data['app_id'];
 
         return $this;
     }

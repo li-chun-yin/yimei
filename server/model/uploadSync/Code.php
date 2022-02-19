@@ -27,9 +27,11 @@ class Code
         self::TYPE_DOUYIN       => '抖音',
         self::TYPE_TOUTIAO      => '今日头条',
         self::TYPE_XIGUA        => '西瓜视频',
+        self::TYPE_KUAISHOU     => '快手',
     ];
     const TYPE_DOUYIN   = '0';
     const TYPE_TOUTIAO  = '1';
     const TYPE_XIGUA    = '2';
+    const TYPE_KUAISHOU = '3';
     /********************************************************************************************************/
 }

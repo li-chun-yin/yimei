@@ -34,7 +34,7 @@ class Kuaishou extends ControllerAbstract
 
         $KuaishouSettingEntity    = $SettingManager->loadByType(Code::TYPE_KUAISHOU);
 
-        $OauthAccessTokenResponse   = ApiClient::request('OauthAccessToken', [
+        $OauthAccessTokenResponse   = ApiClient::request('Oauth2AccessToken', [
             'app_id'                => $KuaishouSettingEntity->getData()['app_id'],
             'app_secret'            => $KuaishouSettingEntity->getData()['app_secret'],
             'code'                  => $code,
@@ -66,7 +66,7 @@ class Kuaishou extends ControllerAbstract
         }
 
 
-        $OauthUserInfoResponse  = ApiClient::request('OauthUserInfo', [
+        $OauthUserInfoResponse  = ApiClient::request('OpenapiUserInfo', [
             'app_id'            => $KuaishouSettingEntity->getData()['app_id'],
             'access_token'      => $KuaishouIdEntity->getAccessToken(),
         ]);

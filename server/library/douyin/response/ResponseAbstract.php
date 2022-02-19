@@ -13,12 +13,12 @@ use exception\SystemException;
 abstract class ResponseAbstract implements ResponseInterface
 {
     private $data = [];
-    
+
     /**
      * 响应值data应包含的字段
      */
     abstract public function getFieldNames() : array;
-    
+
     /**
      *
      * @param HttpResponseInterface $Response
@@ -33,9 +33,9 @@ abstract class ResponseAbstract implements ResponseInterface
      * {@inheritDoc}
      * @see ResponseInterface::get()
      */
-    public function get(string $key)
+    public function get(string $key = null)
     {
-        return $this->data[$key];
+        return is_null( $key ) ? $this->data : $this->data[$key];
     }
     /**
      * 解析响应
@@ -64,16 +64,16 @@ abstract class ResponseAbstract implements ResponseInterface
         if(empty($decoded_json)){
             throw new SystemException(sprintf('抖音的响应结果异常[%s]', $json));
         }
-        
+
         if(!empty($decoded_json['error_code'])){
             throw new SystemException(sprintf('抖音服务器提示:', $decoded_json['description']));
         }
-        
+
         foreach($this->getFieldNames() AS $field){
             if(!array_key_exists($field, $decoded_json['data'])){
                 throw new SystemException(sprintf('抖音的响应结果有字段缺失[%s]', $json));
             }
         }
     }
-    
+
 }

@@ -6,7 +6,7 @@ namespace library\kuaishou\response;
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年11月3日
  */
-class OauthAccessTokenResponse extends ResponseAbstract
+class Oauth2AccessTokenResponse extends ResponseAbstract
 {
     /**
      *
