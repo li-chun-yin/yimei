@@ -4,39 +4,37 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "884b129fa083071c1257aab3875fc93f",
+    "content-hash": "9e53a244ca35259c9dbab9fbfd776b38",
     "packages": [
         {
             "name": "asbamboo/api",
-            "version": "1.0.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/api.git",
-                "reference": "f38b701a037174e12ebfe25df36b720b61d68750"
+                "reference": "1c0da23b6794b15875d9bedd3a838feae80db9fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/api/zipball/f38b701a037174e12ebfe25df36b720b61d68750",
-                "reference": "f38b701a037174e12ebfe25df36b720b61d68750",
+                "url": "https://api.github.com/repos/asbamboo/api/zipball/1c0da23b6794b15875d9bedd3a838feae80db9fe",
+                "reference": "1c0da23b6794b15875d9bedd3a838feae80db9fe",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/event": "^1.0",
-                "asbamboo/http": "^1.0",
-                "asbamboo/router": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/event": "dev-master",
+                "asbamboo/http": "dev-master",
+                "asbamboo/router": "dev-master",
                 "php": "^7.2",
                 "psr/container": "^1.0"
             },
             "require-dev": {
-                "asbamboo/di": "^1.0",
+                "asbamboo/di": "dev-master",
                 "phpunit/phpunit": "^7.3"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -46,22 +44,22 @@
             "description": "asbamboo/api 是用来简化Web API接口开发一个辅助模块",
             "support": {
                 "issues": "https://github.com/asbamboo/api/issues",
-                "source": "https://github.com/asbamboo/api/tree/1.0.0"
+                "source": "https://github.com/asbamboo/api/tree/master"
             },
-            "time": "2020-06-11T10:26:04+00:00"
+            "time": "2022-02-15T06:31:51+00:00"
         },
         {
             "name": "asbamboo/autoload",
-            "version": "1.0.1.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/autoload.git",
-                "reference": "5552e4195e467a72d278ed878f3c32b97080187a"
+                "reference": "dc59c74e958ba29269825af19ae26559c0514273"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/autoload/zipball/5552e4195e467a72d278ed878f3c32b97080187a",
-                "reference": "5552e4195e467a72d278ed878f3c32b97080187a",
+                "url": "https://api.github.com/repos/asbamboo/autoload/zipball/dc59c74e958ba29269825af19ae26559c0514273",
+                "reference": "dc59c74e958ba29269825af19ae26559c0514273",
                 "shasum": ""
             },
             "require": {
@@ -70,19 +68,17 @@
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "asbamboo\\autoload\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "asbamboo\\autoload\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -91,37 +87,35 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/autoload/issues",
-                "source": "https://github.com/asbamboo/autoload/tree/1.0.1"
+                "source": "https://github.com/asbamboo/autoload/tree/master"
             },
-            "time": "2018-10-26T09:20:13+00:00"
+            "time": "2022-02-14T15:24:56+00:00"
         },
         {
             "name": "asbamboo/console",
-            "version": "1.0.1.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/console.git",
-                "reference": "b696162a819af8fbbbaef8e9e5a4dde7c72cac99"
+                "reference": "bbd3df198e225803cfc453665824b2637f48c13d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/console/zipball/b696162a819af8fbbbaef8e9e5a4dde7c72cac99",
-                "reference": "b696162a819af8fbbbaef8e9e5a4dde7c72cac99",
+                "url": "https://api.github.com/repos/asbamboo/console/zipball/bbd3df198e225803cfc453665824b2637f48c13d",
+                "reference": "bbd3df198e225803cfc453665824b2637f48c13d",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/event": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/event": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -130,35 +124,38 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/console/issues",
-                "source": "https://github.com/asbamboo/console/tree/1.0.1"
+                "source": "https://github.com/asbamboo/console/tree/master"
             },
-            "time": "2019-03-17T09:43:39+00:00"
+            "time": "2022-02-15T03:46:18+00:00"
         },
         {
             "name": "asbamboo/database",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/database.git",
-                "reference": "401163c8d3dc398dd25cf9ddb57dee9bd36816ef"
+                "reference": "5203484c0b295688bc84ca9dd349bcecdd68022e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/database/zipball/401163c8d3dc398dd25cf9ddb57dee9bd36816ef",
-                "reference": "401163c8d3dc398dd25cf9ddb57dee9bd36816ef",
+                "url": "https://api.github.com/repos/asbamboo/database/zipball/5203484c0b295688bc84ca9dd349bcecdd68022e",
+                "reference": "5203484c0b295688bc84ca9dd349bcecdd68022e",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/console": "^1.0",
-                "asbamboo/event": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/console": "dev-master",
+                "asbamboo/event": "dev-master",
+                "doctrine/annotations": "1.14.x-dev",
                 "doctrine/orm": "^2.6",
                 "php": "^7.2",
+                "symfony/cache": "5.4.x-dev",
                 "symfony/yaml": "^4.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "7.2.0"
             },
+            "default-branch": true,
             "bin": [
                 "bin/asbamboo-database"
             ],
@@ -169,9 +166,6 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -180,37 +174,35 @@
             ],
             "description": "数据操作模块",
             "support": {
-                "source": "https://github.com/asbamboo/database/tree/1.1.0"
+                "source": "https://github.com/asbamboo/database/tree/master"
             },
-            "time": "2019-04-03T06:03:06+00:00"
+            "time": "2022-02-15T04:15:56+00:00"
         },
         {
             "name": "asbamboo/di",
-            "version": "1.0.2.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/di.git",
-                "reference": "90dda5015b54439a10979fedef939354e6e7b80c"
+                "reference": "ebef736a8bd6b98f88c8f4a1576f8fac0d715cd7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/di/zipball/90dda5015b54439a10979fedef939354e6e7b80c",
-                "reference": "90dda5015b54439a10979fedef939354e6e7b80c",
+                "url": "https://api.github.com/repos/asbamboo/di/zipball/ebef736a8bd6b98f88c8f4a1576f8fac0d715cd7",
+                "reference": "ebef736a8bd6b98f88c8f4a1576f8fac0d715cd7",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
+                "asbamboo/autoload": "dev-master",
                 "php": "^7.2",
                 "psr/container": "^1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -220,32 +212,33 @@
             "description": "基于psr/container(PHP FIG PSR-11)的Container模块",
             "support": {
                 "issues": "https://github.com/asbamboo/di/issues",
-                "source": "https://github.com/asbamboo/di/tree/1.0.2"
+                "source": "https://github.com/asbamboo/di/tree/master"
             },
-            "time": "2019-02-26T02:01:10+00:00"
+            "time": "2022-02-14T15:57:06+00:00"
         },
         {
             "name": "asbamboo/event",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/event.git",
-                "reference": "1fb8391b435e95d93ab9c86a3539add3a1341829"
+                "reference": "a6e41c390ab80d26c5bef031eb79aa0fee02a7b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/event/zipball/1fb8391b435e95d93ab9c86a3539add3a1341829",
-                "reference": "1fb8391b435e95d93ab9c86a3539add3a1341829",
+                "url": "https://api.github.com/repos/asbamboo/event/zipball/a6e41c390ab80d26c5bef031eb79aa0fee02a7b6",
+                "reference": "a6e41c390ab80d26c5bef031eb79aa0fee02a7b6",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/helper": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/helper": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -253,9 +246,6 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -264,46 +254,44 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/event/issues",
-                "source": "https://github.com/asbamboo/event/tree/1.1.0"
+                "source": "https://github.com/asbamboo/event/tree/master"
             },
-            "time": "2018-12-18T06:05:55+00:00"
+            "time": "2022-02-15T02:38:17+00:00"
         },
         {
             "name": "asbamboo/framework",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/framework.git",
-                "reference": "e1768d8b0b1c19ef69a94457ab16388518c2de08"
+                "reference": "d8c219e8453e02f65adb1b038207f91d5a9068cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/framework/zipball/e1768d8b0b1c19ef69a94457ab16388518c2de08",
-                "reference": "e1768d8b0b1c19ef69a94457ab16388518c2de08",
+                "url": "https://api.github.com/repos/asbamboo/framework/zipball/d8c219e8453e02f65adb1b038207f91d5a9068cd",
+                "reference": "d8c219e8453e02f65adb1b038207f91d5a9068cd",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/console": "^1.0",
-                "asbamboo/database": "^1.0",
-                "asbamboo/di": "^1.0",
-                "asbamboo/event": "^1.0",
-                "asbamboo/helper": "^1.0",
-                "asbamboo/http": "^1.0",
-                "asbamboo/router": "^1.0",
-                "asbamboo/security": "^1.0",
-                "asbamboo/session": "^1.0",
-                "asbamboo/template": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/console": "dev-master",
+                "asbamboo/database": "dev-master",
+                "asbamboo/di": "dev-master",
+                "asbamboo/event": "dev-master",
+                "asbamboo/helper": "dev-master",
+                "asbamboo/http": "dev-master",
+                "asbamboo/router": "dev-master",
+                "asbamboo/security": "dev-master",
+                "asbamboo/session": "dev-master",
+                "asbamboo/template": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -312,31 +300,32 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/framework/issues",
-                "source": "https://github.com/asbamboo/framework/tree/1.1.0"
+                "source": "https://github.com/asbamboo/framework/tree/master"
             },
-            "time": "2019-07-31T08:08:46+00:00"
+            "time": "2022-02-15T05:30:48+00:00"
         },
         {
             "name": "asbamboo/helper",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/helper.git",
-                "reference": "2ffe400ca3f3eb489afdf20fe00d2aff50a9f6d6"
+                "reference": "8cc6f9c9af8299de342b6c31061b2b742868c2f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/helper/zipball/2ffe400ca3f3eb489afdf20fe00d2aff50a9f6d6",
-                "reference": "2ffe400ca3f3eb489afdf20fe00d2aff50a9f6d6",
+                "url": "https://api.github.com/repos/asbamboo/helper/zipball/8cc6f9c9af8299de342b6c31061b2b742868c2f6",
+                "reference": "8cc6f9c9af8299de342b6c31061b2b742868c2f6",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
+                "asbamboo/autoload": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -344,9 +333,6 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -355,38 +341,36 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/helper/issues",
-                "source": "https://github.com/asbamboo/helper/tree/1.1.0"
+                "source": "https://github.com/asbamboo/helper/tree/master"
             },
-            "time": "2018-12-04T06:20:21+00:00"
+            "time": "2022-02-15T02:30:52+00:00"
         },
         {
             "name": "asbamboo/http",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/http.git",
-                "reference": "ebcf5f3d2246f994b40440600122cd4409682dde"
+                "reference": "b01ab3c0ddc678d0149dce2512292f2ce6be31db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/http/zipball/ebcf5f3d2246f994b40440600122cd4409682dde",
-                "reference": "ebcf5f3d2246f994b40440600122cd4409682dde",
+                "url": "https://api.github.com/repos/asbamboo/http/zipball/b01ab3c0ddc678d0149dce2512292f2ce6be31db",
+                "reference": "b01ab3c0ddc678d0149dce2512292f2ce6be31db",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/event": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/event": "dev-master",
                 "php": "^7.2",
                 "psr/http-message": "^1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -395,37 +379,35 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/http/issues",
-                "source": "https://github.com/asbamboo/http/tree/1.1.0"
+                "source": "https://github.com/asbamboo/http/tree/master"
             },
-            "time": "2019-08-11T12:44:41+00:00"
+            "time": "2022-02-15T02:41:11+00:00"
         },
         {
             "name": "asbamboo/logger",
-            "version": "1.0.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/logger.git",
-                "reference": "eb9484c885c899a52888b63fe5573c17ccc06ea0"
+                "reference": "4d1f78f1907fade845de17a3c960c0a2f1fc7103"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/logger/zipball/eb9484c885c899a52888b63fe5573c17ccc06ea0",
-                "reference": "eb9484c885c899a52888b63fe5573c17ccc06ea0",
+                "url": "https://api.github.com/repos/asbamboo/logger/zipball/4d1f78f1907fade845de17a3c960c0a2f1fc7103",
+                "reference": "4d1f78f1907fade845de17a3c960c0a2f1fc7103",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
+                "asbamboo/autoload": "dev-master",
                 "php": "^7.2",
                 "psr/log": "^1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.3@dev"
             },
+            "default-branch": true,
             "type": "project",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -435,37 +417,35 @@
             "description": "日志模块，遵守psr3规则",
             "support": {
                 "issues": "https://github.com/asbamboo/logger/issues",
-                "source": "https://github.com/asbamboo/logger/tree/1.0.0"
+                "source": "https://github.com/asbamboo/logger/tree/master"
             },
-            "time": "2018-10-18T04:42:32+00:00"
+            "time": "2022-02-15T06:58:31+00:00"
         },
         {
             "name": "asbamboo/router",
-            "version": "1.0.1.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/router.git",
-                "reference": "ce01de67fee0ddafa764ea1ef06c718b205e9431"
+                "reference": "27e9082830ef6d4a3e8dea68b1b50ff4d3aef8d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/router/zipball/ce01de67fee0ddafa764ea1ef06c718b205e9431",
-                "reference": "ce01de67fee0ddafa764ea1ef06c718b205e9431",
+                "url": "https://api.github.com/repos/asbamboo/router/zipball/27e9082830ef6d4a3e8dea68b1b50ff4d3aef8d1",
+                "reference": "27e9082830ef6d4a3e8dea68b1b50ff4d3aef8d1",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/http": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/http": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -474,39 +454,37 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/router/issues",
-                "source": "https://github.com/asbamboo/router/tree/1.0.1"
+                "source": "https://github.com/asbamboo/router/tree/master"
             },
-            "time": "2021-12-30T00:44:41+00:00"
+            "time": "2022-02-15T02:45:40+00:00"
         },
         {
             "name": "asbamboo/security",
-            "version": "v1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/security.git",
-                "reference": "b4e23b9d44bddbbcaae7c58c6eb7974b3ee3ebff"
+                "reference": "d90ffc2cbed05911f89a397407ecd4ce71df9811"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/security/zipball/b4e23b9d44bddbbcaae7c58c6eb7974b3ee3ebff",
-                "reference": "b4e23b9d44bddbbcaae7c58c6eb7974b3ee3ebff",
+                "url": "https://api.github.com/repos/asbamboo/security/zipball/d90ffc2cbed05911f89a397407ecd4ce71df9811",
+                "reference": "d90ffc2cbed05911f89a397407ecd4ce71df9811",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
-                "asbamboo/event": "^1.0",
-                "asbamboo/http": "^1.0",
-                "asbamboo/session": "^1.0",
+                "asbamboo/autoload": "dev-master",
+                "asbamboo/event": "dev-master",
+                "asbamboo/http": "dev-master",
+                "asbamboo/session": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -515,31 +493,32 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/security/issues",
-                "source": "https://github.com/asbamboo/security/tree/1.0.0"
+                "source": "https://github.com/asbamboo/security/tree/master"
             },
-            "time": "2018-09-17T07:05:36+00:00"
+            "time": "2022-02-15T05:03:27+00:00"
         },
         {
             "name": "asbamboo/session",
-            "version": "1.0.1.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/session.git",
-                "reference": "94361bbffefe01b73e6660297791192f82487659"
+                "reference": "2ba3b1660a8bde534d357e62089e5c4ba4b8a810"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/session/zipball/94361bbffefe01b73e6660297791192f82487659",
-                "reference": "94361bbffefe01b73e6660297791192f82487659",
+                "url": "https://api.github.com/repos/asbamboo/session/zipball/2ba3b1660a8bde534d357e62089e5c4ba4b8a810",
+                "reference": "2ba3b1660a8bde534d357e62089e5c4ba4b8a810",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
+                "asbamboo/autoload": "dev-master",
                 "php": "^7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -547,9 +526,6 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -558,37 +534,35 @@
             ],
             "support": {
                 "issues": "https://github.com/asbamboo/session/issues",
-                "source": "https://github.com/asbamboo/session/tree/1.0.1"
+                "source": "https://github.com/asbamboo/session/tree/master"
             },
-            "time": "2018-12-17T08:15:05+00:00"
+            "time": "2022-02-15T04:54:24+00:00"
         },
         {
             "name": "asbamboo/template",
-            "version": "1.1.0.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/template.git",
-                "reference": "f2784867e77380252578e8843ca1952070fca19b"
+                "reference": "150efc9d1733ffa226e60ef0bb161e263fbbdb56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/template/zipball/f2784867e77380252578e8843ca1952070fca19b",
-                "reference": "f2784867e77380252578e8843ca1952070fca19b",
+                "url": "https://api.github.com/repos/asbamboo/template/zipball/150efc9d1733ffa226e60ef0bb161e263fbbdb56",
+                "reference": "150efc9d1733ffa226e60ef0bb161e263fbbdb56",
                 "shasum": ""
             },
             "require": {
-                "asbamboo/autoload": "^1.0",
+                "asbamboo/autoload": "dev-master",
                 "php": "^7.2",
                 "twig/twig": "^2.4"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.2"
             },
+            "default-branch": true,
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
             "authors": [
                 {
                     "name": "李春寅",
@@ -598,9 +572,82 @@
             "description": "模板引擎",
             "support": {
                 "issues": "https://github.com/asbamboo/template/issues",
-                "source": "https://github.com/asbamboo/template/tree/1.1.0"
+                "source": "https://github.com/asbamboo/template/tree/master"
             },
-            "time": "2018-12-04T23:47:53+00:00"
+            "time": "2022-02-15T05:15:16+00:00"
+        },
+        {
+            "name": "doctrine/annotations",
+            "version": "1.14.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/annotations.git",
+                "reference": "2da982ad3c26da81b91db8d7b54abf3a5922e73c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/2da982ad3c26da81b91db8d7b54abf3a5922e73c",
+                "reference": "2da982ad3c26da81b91db8d7b54abf3a5922e73c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/lexer": "1.*",
+                "ext-tokenizer": "*",
+                "php": "^7.1 || ^8.0",
+                "psr/cache": "^1 || ^2 || ^3"
+            },
+            "require-dev": {
+                "doctrine/cache": "^1.11 || ^2.0",
+                "doctrine/coding-standard": "^6.0 || ^8.1",
+                "phpstan/phpstan": "^0.12.20",
+                "phpunit/phpunit": "^7.5 || ^8.0 || ^9.1.5",
+                "symfony/cache": "^4.4 || ^5.2",
+                "vimeo/psalm": "^4.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Common\\Annotations\\": "lib/Doctrine/Common/Annotations"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Docblock Annotations Parser",
+            "homepage": "https://www.doctrine-project.org/projects/annotations.html",
+            "keywords": [
+                "annotations",
+                "docblock",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/doctrine/annotations/issues",
+                "source": "https://github.com/doctrine/annotations/tree/1.14.x"
+            },
+            "time": "2021-10-15T21:17:00+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -772,16 +819,16 @@
         },
         {
             "name": "doctrine/common",
-            "version": "3.2.1",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "e927fc2410c8723d053b8032e591cdff76587cdb"
+                "reference": "295082d3750987065912816a9d536c2df735f637"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/e927fc2410c8723d053b8032e591cdff76587cdb",
-                "reference": "e927fc2410c8723d053b8032e591cdff76587cdb",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/295082d3750987065912816a9d536c2df735f637",
+                "reference": "295082d3750987065912816a9d536c2df735f637",
                 "shasum": ""
             },
             "require": {
@@ -790,7 +837,7 @@
             },
             "require-dev": {
                 "doctrine/coding-standard": "^9.0",
-                "phpstan/phpstan": "^1.2.0",
+                "phpstan/phpstan": "^1.4.1",
                 "phpstan/phpstan-phpunit": "^1",
                 "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.0",
                 "squizlabs/php_codesniffer": "^3.0",
@@ -842,7 +889,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/common/issues",
-                "source": "https://github.com/doctrine/common/tree/3.2.1"
+                "source": "https://github.com/doctrine/common/tree/3.2.2"
             },
             "funding": [
                 {
@@ -858,7 +905,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-26T22:39:45+00:00"
+            "time": "2022-02-02T09:15:57+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -1344,16 +1391,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.11.0",
+            "version": "2.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "bfed8cb6ed448f4ab1ea3fff06e4d6c44439e4ef"
+                "reference": "4b88ce787d3916c8366abf52f6c658a7a27ed3a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/bfed8cb6ed448f4ab1ea3fff06e4d6c44439e4ef",
-                "reference": "bfed8cb6ed448f4ab1ea3fff06e4d6c44439e4ef",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/4b88ce787d3916c8366abf52f6c658a7a27ed3a6",
+                "reference": "4b88ce787d3916c8366abf52f6c658a7a27ed3a6",
                 "shasum": ""
             },
             "require": {
@@ -1383,12 +1430,12 @@
                 "doctrine/annotations": "^1.13",
                 "doctrine/coding-standard": "^9.0",
                 "phpbench/phpbench": "^0.16.10 || ^1.0",
-                "phpstan/phpstan": "1.3.3",
+                "phpstan/phpstan": "1.4.3",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
                 "squizlabs/php_codesniffer": "3.6.2",
                 "symfony/cache": "^4.4 || ^5.4 || ^6.0",
                 "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
-                "vimeo/psalm": "4.18.1"
+                "vimeo/psalm": "4.19.0"
             },
             "suggest": {
                 "symfony/cache": "Provides cache support for Setup Tool with doctrine/cache 2.0",
@@ -1437,9 +1484,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.11.0"
+                "source": "https://github.com/doctrine/orm/tree/2.11.1"
             },
-            "time": "2022-01-12T13:20:33+00:00"
+            "time": "2022-01-30T21:47:06+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -1875,16 +1922,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v5.4.2",
+            "version": "5.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "8aad4b69a10c5c51ab54672e78995860f5e447ec"
+                "reference": "271901728545c9476e93b68a4f4b42a38afd6ad7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/8aad4b69a10c5c51ab54672e78995860f5e447ec",
-                "reference": "8aad4b69a10c5c51ab54672e78995860f5e447ec",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/271901728545c9476e93b68a4f4b42a38afd6ad7",
+                "reference": "271901728545c9476e93b68a4f4b42a38afd6ad7",
                 "shasum": ""
             },
             "require": {
@@ -1922,6 +1969,7 @@
                 "symfony/messenger": "^4.4|^5.0|^6.0",
                 "symfony/var-dumper": "^4.4|^5.0|^6.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -1952,7 +2000,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v5.4.2"
+                "source": "https://github.com/symfony/cache/tree/5.4"
             },
             "funding": [
                 {
@@ -1968,7 +2016,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-28T17:15:56+00:00"
+            "time": "2022-02-11T14:36:02+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -2051,16 +2099,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a2c6b7ced2eb7799a35375fb9022519282b5405e"
+                "reference": "a2a86ec353d825c75856c6fd14fac416a7bdb6b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a2c6b7ced2eb7799a35375fb9022519282b5405e",
-                "reference": "a2c6b7ced2eb7799a35375fb9022519282b5405e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a2a86ec353d825c75856c6fd14fac416a7bdb6b8",
+                "reference": "a2a86ec353d825c75856c6fd14fac416a7bdb6b8",
                 "shasum": ""
             },
             "require": {
@@ -2130,7 +2178,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.2"
+                "source": "https://github.com/symfony/console/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -2146,7 +2194,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-20T16:11:12+00:00"
+            "time": "2022-01-26T16:28:35+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2331,12 +2379,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Iconv\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Iconv\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2411,12 +2459,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2494,12 +2542,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2579,12 +2627,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -2666,12 +2714,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2743,12 +2791,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php72\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2819,12 +2867,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php73\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php73\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -2898,12 +2946,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php80\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -3034,16 +3082,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "e6a5d5ecf6589c5247d18e0e74e30b11dfd51a3d"
+                "reference": "92043b7d8383e48104e411bc9434b260dbeb5a10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/e6a5d5ecf6589c5247d18e0e74e30b11dfd51a3d",
-                "reference": "e6a5d5ecf6589c5247d18e0e74e30b11dfd51a3d",
+                "url": "https://api.github.com/repos/symfony/string/zipball/92043b7d8383e48104e411bc9434b260dbeb5a10",
+                "reference": "92043b7d8383e48104e411bc9434b260dbeb5a10",
                 "shasum": ""
             },
             "require": {
@@ -3100,7 +3148,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.2"
+                "source": "https://github.com/symfony/string/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -3116,20 +3164,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-16T21:52:00+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "2360c8525815b8535caac27cbc1994e2fa8644ba"
+                "reference": "b199936b7365be36663532e547812d3abb10234a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/2360c8525815b8535caac27cbc1994e2fa8644ba",
-                "reference": "2360c8525815b8535caac27cbc1994e2fa8644ba",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/b199936b7365be36663532e547812d3abb10234a",
+                "reference": "b199936b7365be36663532e547812d3abb10234a",
                 "shasum": ""
             },
             "require": {
@@ -3173,7 +3221,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v5.4.2"
+                "source": "https://github.com/symfony/var-exporter/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -3189,20 +3237,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-16T21:58:21+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.36",
+            "version": "v4.4.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "a19f7c44ba665fa9d9d415cc4493361381b93f9b"
+                "reference": "d7f637cc0f0cc14beb0984f2bb50da560b271311"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/a19f7c44ba665fa9d9d415cc4493361381b93f9b",
-                "reference": "a19f7c44ba665fa9d9d415cc4493361381b93f9b",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/d7f637cc0f0cc14beb0984f2bb50da560b271311",
+                "reference": "d7f637cc0f0cc14beb0984f2bb50da560b271311",
                 "shasum": ""
             },
             "require": {
@@ -3244,7 +3292,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v4.4.36"
+                "source": "https://github.com/symfony/yaml/tree/v4.4.37"
             },
             "funding": [
                 {
@@ -3260,20 +3308,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-25T16:40:00+00:00"
+            "time": "2022-01-24T20:11:01+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v2.14.10",
+            "version": "v2.14.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "95fb194cd4dd6ac373a27af2bde2bad5d3f27aba"
+                "reference": "66baa66f29ee30e487e05f1679903e36eb01d727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/95fb194cd4dd6ac373a27af2bde2bad5d3f27aba",
-                "reference": "95fb194cd4dd6ac373a27af2bde2bad5d3f27aba",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/66baa66f29ee30e487e05f1679903e36eb01d727",
+                "reference": "66baa66f29ee30e487e05f1679903e36eb01d727",
                 "shasum": ""
             },
             "require": {
@@ -3328,7 +3376,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v2.14.10"
+                "source": "https://github.com/twigphp/Twig/tree/v2.14.11"
             },
             "funding": [
                 {
@@ -3340,13 +3388,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-03T21:13:26+00:00"
+            "time": "2022-02-04T06:57:25+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "asbamboo/framework": 20,
+        "asbamboo/autoload": 20,
+        "asbamboo/session": 20,
+        "asbamboo/console": 20,
+        "asbamboo/database": 20,
+        "asbamboo/di": 20,
+        "asbamboo/event": 20,
+        "asbamboo/api": 20,
+        "asbamboo/helper": 20,
+        "asbamboo/http": 20,
+        "asbamboo/router": 20,
+        "asbamboo/template": 20,
+        "asbamboo/logger": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
