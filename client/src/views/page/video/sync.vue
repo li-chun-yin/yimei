@@ -16,7 +16,7 @@
           <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetAbstract" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="视频封面" class="c-batch-video-cover-image" help="用于抖音">
+        <a-form-item label="视频封面" class="c-batch-video-cover-image" help="用于抖音,快手">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">
             <div class="c-image-box">
               <a-image v-if="syncDescFormConfig.cover_image_url" :src="syncDescFormConfig.cover_image_url" class="c-image"></a-image>
@@ -93,6 +93,8 @@
           
           <SyncXiguaItem v-if="item.type=='xigua'" v-model:item="syncIds[index]" />
 
+          <SyncKuaishouItem v-if="item.type=='kuaishou'" v-model:item="syncIds[index]" />
+
         </template>
       </a-list>
     </a-card>
@@ -129,9 +131,11 @@ import { useGlobSetting } from '/@/hooks/setting';
 import SyncDouyinData from './data/SyncDouyinData';
 import SyncToutiaoData from './data/SyncToutiaoData';
 import SyncXiguaData from './data/SyncXiguaData';
+import SyncKuaishouData from './data/SyncKuaishouData';
 import SyncDouyinItem from './components/SyncDouyinItem.vue';
 import SyncToutiaoItem from './components/SyncToutiaoItem.vue';
 import SyncXiguaItem from './components/SyncXiguaItem.vue';
+import SyncKuaishouItem from './components/SyncKuaishouItem.vue';
 
 export default defineComponent({
   name: 'VideoSyncPage',
@@ -139,6 +143,7 @@ export default defineComponent({
     SyncDouyinItem,
     SyncToutiaoItem,
     SyncXiguaItem,
+    SyncKuaishouItem,
     PageWrapper,
     ApiSelect,
     Time,
@@ -310,6 +315,8 @@ export default defineComponent({
     await SyncToutiaoData(this)
     console.log(this.SyncIdPushedCount)
     await SyncXiguaData(this)
+    console.log(this.SyncIdPushedCount)
+    await SyncKuaishouData(this)
     console.log(this.SyncIdPushedCount)
   }  
 })

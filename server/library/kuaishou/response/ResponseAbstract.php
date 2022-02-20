@@ -67,7 +67,7 @@ abstract class ResponseAbstract implements ResponseInterface
         }
 
         if($decoded_json['result'] != 1){
-            throw new SystemException(sprintf('快手服务器提示:', $json));
+            throw new SystemException(sprintf('快手服务器提示:[%s]', $json));
         }
 
         foreach($this->getFieldNames() AS $field){

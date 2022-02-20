@@ -6,7 +6,7 @@ namespace library\kuaishou\response;
  * @author 李春寅<licy2013@aliyun.com>
  * @since 2022年2月19日
  */
-class ApiUploadFragmentResponse extends ResponseAbstract
+class ApiUploadCompleteResponse extends ResponseAbstract
 {
     /**
      *

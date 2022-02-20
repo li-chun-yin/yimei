@@ -13,21 +13,24 @@ trait CreateRequestTrait
 {
     private $http_method = "POST";
 
+    private $http_header = null;
+
     /**
      *
      * @return ClientRequestInterface
      */
     public function create() : ClientRequestInterface
     {
-        return new class ($this->uri(), $this->body(), $this->http_method) implements ClientRequestInterface{
+        return new class ($this->uri(), $this->body(), $this->http_method, $this->http_header) implements ClientRequestInterface{
 
-            private $uri, $body, $method;
+            private $uri, $body, $method, $header;
 
-            public function __construct($uri, $body, $method)
+            public function __construct($uri, $body, $method, $header)
             {
                 $this->uri          = (string)$uri;
                 $this->body         = $body;
                 $this->http_method  = $method;
+                $this->http_header  = $header;
             }
 
             public function getUri() : string
@@ -44,6 +47,11 @@ trait CreateRequestTrait
             {
                 return $this->http_method;
             }
+
+            public function getHttpHeader() : ?array
+            {
+                return $this->http_header;
+            }
         };
     }
 
@@ -55,6 +63,18 @@ trait CreateRequestTrait
     public function method(string $method) : self
     {
         $this->http_method = $method;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param array $header
+     * @return self
+     */
+    public function httpHeader(array $header) : self
+    {
+        $this->http_header = $header;
 
         return $this;
     }

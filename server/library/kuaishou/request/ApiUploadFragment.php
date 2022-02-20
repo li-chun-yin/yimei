@@ -37,7 +37,7 @@ class ApiUploadFragment implements RequestInterface
      */
     public function body()
     {
-        return $this->contents;
+        return $this->assign_data['contents'];
     }
 
     /**
@@ -48,11 +48,17 @@ class ApiUploadFragment implements RequestInterface
     public function assignData(array $assign_data): RequestInterface
     {
         $this->setGateway($assign_data['upload_http']);
+        $this->httpHeader(["Content-Type: {$assign_data['mime_type']}"]);
 
         $this->query_data['fragment_id']    = $assign_data['fragment_id'];
         $this->query_data['upload_token']   = $assign_data['upload_token'];
 
-        unset($assign_data['upload_http'], $assign_data['fragment_id'], $assign_data['upload_token']);
+        unset(
+            $assign_data['upload_http'],
+            $assign_data['mime_type'],
+            $assign_data['fragment_id'],
+            $assign_data['upload_token']
+        );
 
         $this->assign_data['contents']      = $assign_data['contents'];
 

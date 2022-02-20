@@ -8,7 +8,8 @@ export interface VideoInfoModel {
 export enum SYNC_TYPE {
   DOUYIN = 0,
   TOUTIAO = 1,
-  XIGUA = 2
+  XIGUA = 2,
+  KUAISHOU = 3
 }
 export enum SYNC_STATUS {
   ING = 0,

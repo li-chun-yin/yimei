@@ -63,14 +63,20 @@ class ApiClient
         }
 
         if($ClientRequest->getHttpMethod() == "POST"){
+//             var_dump('client_request:', $ClientRequest->getUri());
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $ClientRequest->getUri());
             curl_setopt($ch, CURLOPT_POST, true);
+
+            if(method_exists($ClientRequest, 'getHttpHeader') && $ClientRequest->getHttpHeader()){
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $ClientRequest->getHttpHeader());
+            }
+
             curl_setopt($ch, CURLOPT_POSTFIELDS, $ClientRequest->getBody());
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($ch, $data)use($ClientRequest, $Response){
-//                 var_dump('client_request:', $ClientRequest->getUri(), $ClientRequest->getBody(), $data);
+//                 var_dump('client_res:', $ClientRequest->getBody(), $data);
                 $Response->getBody()->write($data);
             });
             curl_exec($ch);

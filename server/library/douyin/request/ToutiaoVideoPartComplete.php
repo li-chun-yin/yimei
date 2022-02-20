@@ -24,7 +24,7 @@ class ToutiaoVideoPartComplete implements RequestInterface
      *
      * @var string
      */
-    private $path = '/video/part/complete/';
+    private $path = '/toutiao/video/part/upload/';
 
     /**
      *
@@ -36,7 +36,7 @@ class ToutiaoVideoPartComplete implements RequestInterface
         $this->query_data['open_id']       = $assign_data['open_id'];
         $this->query_data['access_token']  = $assign_data['access_token'];
         $this->query_data['upload_id']      = $assign_data['upload_id'];
-        
+
         return $this;
     }
 

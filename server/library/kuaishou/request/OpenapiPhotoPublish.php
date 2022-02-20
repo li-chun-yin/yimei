@@ -2,7 +2,6 @@
 namespace library\kuaishou\request;
 
 use library\kuaishou\gateway\GatewayUriTrait;
-use library\kuaishou\request\tool\BodyTrait;
 use library\kuaishou\request\tool\CreateRequestTrait;
 use library\kuaishou\request\tool\UriTrait;
 
@@ -15,7 +14,6 @@ use library\kuaishou\request\tool\UriTrait;
 class OpenapiPhotoPublish implements RequestInterface
 {
     use GatewayUriTrait;
-    use BodyTrait;
     use UriTrait;
     use CreateRequestTrait;
 
@@ -25,6 +23,22 @@ class OpenapiPhotoPublish implements RequestInterface
      * @var string
      */
     private $path = '/openapi/photo/publish';
+
+    /**
+     *
+     * @var array
+     */
+    private $assign_data = [];
+
+    /**
+     * 传入一个数组生成stream body
+     *
+     * @param array $assign_data
+     */
+    public function body()
+    {
+        return $this->assign_data;
+    }
 
     /**
      *

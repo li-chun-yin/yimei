@@ -20,6 +20,7 @@ use library\douyin\ApiClient;
 use library\model\UploadSyncDescStatus;
 use model\setting\Repository AS SettingRepository;
 use model\setting\Code AS SettingCode;
+use library\kuaishou\ApiClient AS KuaishouApiClient;
 
 /**
  * 视频发布到第三方平台
@@ -383,15 +384,15 @@ class VideoSyncCommand extends CommandAbstract
         $KuaishouIdRepository   = $this->Container->get(KuaishouIdRepository::class);
         $KuaishouIdEntity       = $KuaishouIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
         $SettingEntity          = $SettingRepository->findOneByType(SettingCode::TYPE_KUAISHOU);
-//@TODO
-        $OpenapiPhotoStartUploadResonse = ApiClient::request('OpenapiPhotoStartUpload', [
+//
+        $OpenapiPhotoStartUploadResonse = KuaishouApiClient::request('OpenapiPhotoStartUpload', [
             'app_id'                    => $SettingEntity->getData()['app_id'],
             'access_token'              => $KuaishouIdEntity->getAccessToken(),
         ]);
 
         $video_id           = '';
         if($split_num < 2){
-            $ApiUploadMultipartResponse = ApiClient::request('ApiUploadMultipart', [
+            $ApiUploadMultipartResponse = KuaishouApiClient::request('ApiUploadMultipart', [
                 'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
                 'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
                 'filename'              => $UploadSyncDescEntity->getOriginalName(),
@@ -399,33 +400,41 @@ class VideoSyncCommand extends CommandAbstract
                 'filepath'              => \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath(),
             ]);
         }else{
-            for($i = 0; $i < $split_num; $i++ ){
-                $maxlength  = $i == $split_num ? null : $UploadSyncDescEntity->getSize() / $split_num;
-                $offset     = $UploadSyncDescEntity->getSize() / $split_num * ($i - 1);
-                $path       = \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath();
-                $f          = fopen($path, "rb");
-                $contents   = stream_get_contents($f, $maxlength, $offset);
+            $maxlength  = self::KUAISHOU_SPLIT_SIZE;
+            $path       = \Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadSyncDescEntity->getPath();
+            $f          = fopen($path, "rb");
+            for($i = 0; !feof($f); $i ++){
+                $contents   = fread($f, $maxlength);
 
-                $ApiUploadFragmentResponse  = ApiClient::request('ApiUploadFragment', [
+                $ApiUploadFragmentResponse  = KuaishouApiClient::request('ApiUploadFragment', [
                     'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
                     'fragment_id'           => $i,
                     'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
                     'contents'              => $contents,
+                    'mime_type'             => $UploadSyncDescEntity->getMimeType(),
                 ]);
-
             }
-            $ApiUploadCompleteResponse  = ApiClient::request('ApiUploadComplete', [
+            fclose($f);
+
+            $ApiUploadCompleteResponse  = KuaishouApiClient::request('ApiUploadComplete', [
                 'upload_http'           => 'http://' . $OpenapiPhotoStartUploadResonse->get('endpoint'),
-                'fragment_count'        => $split_num,
+                'fragment_count'        => $i,
                 'upload_token'          => $OpenapiPhotoStartUploadResonse->get('upload_token'),
             ]);
         }
 
-        $OpenapiPhotoPublishResponse    = ApiClient::request('OpenapiPhotoPublish', [
+        $UploadRepository   = $this->Container->get(UploadRepository::class);
+        $UploadImageEntity  = $UploadRepository->findOneByUploadId($UploadSyncEntity->getSyncRequest()['cover_image_upload_id']);
+        $filepath           = realpath(\Constant::UPLOAD_ROOT_PATH . DIRECTORY_SEPARATOR . $UploadImageEntity->getPath());
+        $filename           = $UploadImageEntity->getOriginalName();
+        $mime_type          = $UploadImageEntity->getMimeType();
+        $cover              = new \CURLFile($filepath, $mime_type, $filename);
+
+        $OpenapiPhotoPublishResponse    = KuaishouApiClient::request('OpenapiPhotoPublish', [
             'app_id'                    => $SettingEntity->getData()['app_id'],
             'access_token'              => $KuaishouIdEntity->getAccessToken(),
             'upload_token'              => $OpenapiPhotoStartUploadResonse->get('upload_token'),
-            'cover'                     => $UploadSyncEntity->getSyncRequest()['cover'],
+            'cover'                     => $cover,
             'caption'                   => $UploadSyncEntity->getSyncRequest()['caption'],
         ]);
 
