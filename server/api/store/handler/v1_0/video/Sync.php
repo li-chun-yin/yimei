@@ -30,7 +30,7 @@ class Sync implements ApiClassInterface
         $this->UploadSyncManager        = $UploadSyncManager;
         $this->Db                       = $DbFactory;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -39,7 +39,7 @@ class Sync implements ApiClassInterface
     public function exec(ApiRequestParamsInterface $Params): ?ApiResponseParamsInterface
     {
         try {
-            
+
             $this->UploadSyncManager->load();
             $this->UploadSyncManager->create([
                 'unikey'        => $Params->getUnikey(),
@@ -47,14 +47,14 @@ class Sync implements ApiClassInterface
                 'type'          => $Params->getType(),
                 'sync_request'  => $Params->getSyncRequest(),
             ]);
-            
+
             $UploadSyncDescEntity   = $this->UploadSyncDescManager->load($Params->getUploadId());
             $this->UploadSyncDescManager->updateStatusIng([
                 'sync_data'     => $UploadSyncDescEntity->getSyncData(),
             ]);
-            
+
             $this->Db->getManager()->flush();
-            
+
             return new SyncResponse();
         }catch(MessageException $e){
             throw new ApiException($e->getMessage());

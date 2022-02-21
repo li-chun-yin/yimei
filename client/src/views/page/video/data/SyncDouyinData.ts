@@ -58,6 +58,11 @@ export default async (that) => {
                     that.syncIds[syncIdPutIndex].loading = true;
                     try {
                         console.log(that.syncIds[syncIdPutIndex], that.video)
+
+                        if(!that.syncIds[syncIdPutIndex].cover_image_upload_id){
+                            that.syncIds[syncIdPutIndex].cover_image_upload_id = await that.getCoverImageUploadId()
+                        }
+          
                         await postVideoSync({
                             unikey: that.syncIds[syncIdPutIndex].id.open_id,
                             upload_id: that.video.id,

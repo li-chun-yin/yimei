@@ -7,14 +7,14 @@ export default async (that) => {
         for(let i in res.items) {
           let key = SYNC_TYPE.KUAISHOU + '_' + res.items[i].open_id
           let syncIdPutIndex = parseInt(i, 10) + parseInt(that.SyncIdPushedCount, 10);
-          console.log(syncIdPutIndex, that.syncIds);
+          console.log(syncIdPutIndex, that.syncIds, that.syncDescFormConfig.cover_image_from_video);
           that.syncIds.push({
             type: 'kuaishou',
             id: res.items[i],
             loading: false,
             caption: that.syncs[key] ? that.syncs[key].sync_request.caption : '',
-            cover_image_url: that.syncs[key] ? that.syncs[key].sync_request.cover_image_url : '',
-            cover_image_upload_id: that.syncs[key] ? that.syncs[key].sync_request.cover_image_upload_id : '',
+            cover_image_url: that.syncs[key] ? that.syncs[key].sync_request.cover_image_url : that.syncDescFormConfig.cover_image_url,
+            cover_image_upload_id: that.syncs[key] ? that.syncs[key].sync_request.cover_image_upload_id : that.syncDescFormConfig.cover_image_upload_id,
             sync_status: that.syncs[key] ? that.syncs[key].status : -1,
             setText: () => {
               if(that.syncIds[syncIdPutIndex].sync_status != -1){
@@ -37,14 +37,19 @@ export default async (that) => {
               console.log(that.syncIds[syncIdPutIndex], info)
             },
             onRemoveCoverImage: () => {
-                that.syncIds[syncIdPutIndex].cover_image_url = ''
-                that.syncIds[syncIdPutIndex].cover_image_upload_id = undefined
+                that.syncIds[syncIdPutIndex].cover_image_url = that.syncDescFormConfig.cover_image_from_video
+                that.syncIds[syncIdPutIndex].cover_image_upload_id = that.syncDescFormConfig.cover_image_upload_id
             },
             onSync: async () => {
               console.log('syncing', syncIdPutIndex, that.syncIds[syncIdPutIndex])
               that.syncIds[syncIdPutIndex].loading = true;
               try {
                 console.log(that.syncIds[syncIdPutIndex], that.video)
+                
+                if(!that.syncIds[syncIdPutIndex].cover_image_upload_id){
+                  that.syncIds[syncIdPutIndex].cover_image_upload_id = await that.getCoverImageUploadId()
+                }
+
                 await postVideoSync({
                   unikey: that.syncIds[syncIdPutIndex].id.open_id,
                   upload_id: that.video.id,

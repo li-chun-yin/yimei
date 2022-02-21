@@ -1,9 +1,7 @@
 <template>
   <PageWrapper class="c-video-sync">
     <a-card title="基本信息" :bordered="false">
-      <canvas id="c-canvas"></canvas>
-      <video id="c-video" :src="video.url" width="300" heidht="200" controls="controls" preload @play="listenVideoCanPlay" class="c-video">
-      </video>
+      <video ref="cVideo" crossorigin="anonymous" :src="video.url" controls="controls" @canplay="listenVideoCanPlay" class="c-video" />
       <a-form :model="syncDescFormConfig" :label-col="{span: 4}" class="c-batch-form">
 
         <a-form-item label="视频标题" class="c-batch-video-text" required help="用于所有自媒体平台">
@@ -18,7 +16,7 @@
           <a-button v-if="syncDescFormConfig.sync_status != VIDEO_INDEX_STATUS.DONE" @click="syncDescFormConfig.onBatchSetAbstract" class="c-button">批量设置</a-button>
         </a-form-item>
 
-        <a-form-item label="视频封面" class="c-batch-video-cover-image" help="用于抖音,快手">
+        <a-form-item label="视频封面" class="c-batch-video-cover-image" help="用于抖音,快手 [点击图片可以替换封面]">
           <template v-if="syncDescFormConfig.sync_status == VIDEO_INDEX_STATUS.DONE">
             <div class="c-image-box">
               <a-image v-if="syncDescFormConfig.cover_image_url" :src="syncDescFormConfig.cover_image_url" class="c-image"></a-image>
@@ -128,6 +126,7 @@ import { useRouter } from 'vue-router'
 import { ApiSelect } from '/@/components/Form'
 import { searchDouyiPois } from '/@/api/page/douyin'
 import { getVideoInfo, postVideoSyncBasic } from '/@/api/page/video'
+import { postUploadDataSync } from '/@/api/page/upload'
 import{ SYNC_STATUS, VIDEO_INDEX_STATUS } from '/@/api/page/model/videoModel'
 import { useGlobSetting } from '/@/hooks/setting';
 import SyncDouyinData from './data/SyncDouyinData';
@@ -208,6 +207,7 @@ export default defineComponent({
         praise: false, //赞赏入口 西瓜
         cover_image_url: '', // 抖音
         cover_image_upload_id: undefined, // 抖音
+        cover_image_from_video: undefined,
         poi_id: undefined,// 抖音
         poi_name: '', // 抖音
         loading: false,
@@ -235,6 +235,7 @@ export default defineComponent({
           this.syncDescFormConfig.cover_image_upload_id = undefined
           this.syncDescFormConfig.cover_image_url = ''
           this.syncDescFormConfig.doPostVideoSyncBasic()
+          this.listenVideoCanPlay()
         },
         onChangePoi: ( value:string, option ) => {
           console.log(option)
@@ -322,18 +323,35 @@ export default defineComponent({
     console.log(this.SyncIdPushedCount)
   },
   methods: {
-    listenVideoCanPlay(e){
-      let video = document.getElementById('c-video')
-      let canvas = document.getElementById('c-canvas')
-      canvas.width = video.width
-      canvas.height = video.height
-      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
-      console.log(video)
-      let image_data = canvas.toDataURL('image/png')
-      console.log(image_data)
-      this.syncDescFormConfig.cover_image_url = image_data
-
-      console.log(video.width)
+    listenVideoCanPlay(){
+      if(this.syncDescFormConfig.cover_image_from_video) {
+        this.syncDescFormConfig.cover_image_url = this.syncDescFormConfig.cover_image_from_video
+        return
+      }
+      let video = this.$refs.cVideo
+      let canvas = document.createElement('canvas')
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      let ctx = canvas.getContext('2d')
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      this.syncDescFormConfig.cover_image_from_video = canvas.toDataURL('image/png')
+      if(this.syncDescFormConfig.cover_image_url) {
+        return
+      }
+      this.syncDescFormConfig.cover_image_url = this.syncDescFormConfig.cover_image_from_video
+    },
+    async getCoverImageUploadId(){
+      if(this.syncDescFormConfig.cover_image_upload_id) {
+        return this.syncDescFormConfig.cover_image_upload_id
+      }
+      await postUploadDataSync({
+        data: this.syncDescFormConfig.cover_image_from_video
+      }).then((res) => {
+        console.log(res)
+        this.syncDescFormConfig.cover_image_upload_id = res.id
+        this.syncDescFormConfig.doPostVideoSyncBasic()
+      })
+      return this.syncDescFormConfig.cover_image_upload_id
     }
   }, 
 })
