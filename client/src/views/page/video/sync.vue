@@ -1,7 +1,9 @@
 <template>
   <PageWrapper class="c-video-sync">
     <a-card title="基本信息" :bordered="false">
-      <video v-if="video.url" :src="video.url" controls="controls" class="c-video" />
+      <canvas id="c-canvas"></canvas>
+      <video id="c-video" :src="video.url" width="300" heidht="200" controls="controls" preload @play="listenVideoCanPlay" class="c-video">
+      </video>
       <a-form :model="syncDescFormConfig" :label-col="{span: 4}" class="c-batch-form">
 
         <a-form-item label="视频标题" class="c-batch-video-text" required help="用于所有自媒体平台">
@@ -175,7 +177,7 @@ export default defineComponent({
       }
     });
     const onSearchPoiList = (value: string) => {
-      keyword.value = value;
+      keyword.value = value
     }
 
     return {
@@ -318,7 +320,22 @@ export default defineComponent({
     console.log(this.SyncIdPushedCount)
     await SyncKuaishouData(this)
     console.log(this.SyncIdPushedCount)
-  }  
+  },
+  methods: {
+    listenVideoCanPlay(e){
+      let video = document.getElementById('c-video')
+      let canvas = document.getElementById('c-canvas')
+      canvas.width = video.width
+      canvas.height = video.height
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+      console.log(video)
+      let image_data = canvas.toDataURL('image/png')
+      console.log(image_data)
+      this.syncDescFormConfig.cover_image_url = image_data
+
+      console.log(video.width)
+    }
+  }, 
 })
 </script>
 
