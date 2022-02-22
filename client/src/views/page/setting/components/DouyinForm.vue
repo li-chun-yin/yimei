@@ -1,5 +1,8 @@
 <template>
   <a-card title="抖音开放平台参数" :bordered="false" class="!mt-5">
+    <template #extra>
+      <a href="https://open.douyin.com/" target="_blank">通过抖音开放平台创建应用获取参数</a>
+    </template>
     <BasicForm @register="registerDouyinForm" />
   </a-card>
 </template>

@@ -1,5 +1,8 @@
 <template>
   <a-card title="快手开放平台参数" :bordered="false" class="!mt-5">
+      <template #extra>
+        <a href="https://open.kuaishou.com" target="_blank">通过快手开放平台创建应用获取参数</a>
+      </template>
     <BasicForm @register="registerKuaishouForm" />
   </a-card>
 </template>
