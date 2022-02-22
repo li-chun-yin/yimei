@@ -344,13 +344,15 @@ export default defineComponent({
       if(this.syncDescFormConfig.cover_image_upload_id) {
         return this.syncDescFormConfig.cover_image_upload_id
       }
-      await postUploadDataSync({
-        data: this.syncDescFormConfig.cover_image_from_video
-      }).then((res) => {
-        console.log(res)
-        this.syncDescFormConfig.cover_image_upload_id = res.id
-        this.syncDescFormConfig.doPostVideoSyncBasic()
-      })
+      if(this.syncDescFormConfig.cover_image_from_video){
+        await postUploadDataSync({
+          data: this.syncDescFormConfig.cover_image_from_video
+        }).then((res) => {
+          console.log(res)
+          this.syncDescFormConfig.cover_image_upload_id = res.id
+          this.syncDescFormConfig.doPostVideoSyncBasic()
+        })
+      }
       return this.syncDescFormConfig.cover_image_upload_id
     }
   }, 

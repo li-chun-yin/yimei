@@ -11,6 +11,8 @@ use asbamboo\router\RouterInterface;
 use api\store\parameter\v1_0\video\index\IndexResponse;
 use model\uploadSyncDesc\Repository AS UploadSyncDescRepository;
 use model\uploadSyncDesc\Code;
+use library\model\UploadSyncDescStatus;
+use asbamboo\database\FactoryInterface AS Db;
 
 /**
  * @name 视频列表
@@ -29,15 +31,22 @@ class Index implements ApiClassInterface
      * @var ServerRequestInterface $Request
      */
     private $UploadSyncDescRepository, $Request, $Router;
-    
+
     /**
      */
-    public function __construct(UploadSyncDescRepository $UploadSyncDescRepository, ServerRequestInterface $Request, RouterInterface $Router){
+    public function __construct(
+        UploadSyncDescRepository $UploadSyncDescRepository,
+        ServerRequestInterface $Request, RouterInterface $Router,
+        UploadSyncDescStatus $UploadSyncDescStatus,
+        Db $Db
+    ){
         $this->UploadSyncDescRepository = $UploadSyncDescRepository;
         $this->Request                  = $Request;
         $this->Router                   = $Router;
+        $this->UploadSyncDescStatus     = $UploadSyncDescStatus;
+        $this->Db                       = $Db;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -53,6 +62,9 @@ class Index implements ApiClassInterface
             $Paginator  = $this->UploadSyncDescRepository->getPageLists($this->Request);
             $items      = [];
             foreach($Paginator->getIterator() AS $UploadSyncDescEntity){
+
+                $this->UploadSyncDescStatus->check($UploadSyncDescEntity);
+
                 $items[]            = [
                     'original_name' => $UploadSyncDescEntity->getOriginalName(),
                     'mime_type'     => $UploadSyncDescEntity->getMimeType(),
@@ -64,6 +76,9 @@ class Index implements ApiClassInterface
                     'status_text'   => Code::STATUSS[$UploadSyncDescEntity->getStatus()],
                 ];
             }
+
+            $this->Db->getManager()->flush();
+
             return new IndexResponse([
                 'items'     => $items,
                 'total'     => $Paginator->count(),

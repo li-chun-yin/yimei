@@ -59,7 +59,9 @@ export default async (that) => {
                     try {
                         console.log(that.syncIds[syncIdPutIndex], that.video)
 
-                        if(!that.syncIds[syncIdPutIndex].cover_image_upload_id){
+                        if(     !that.syncIds[syncIdPutIndex].cover_image_upload_id
+                            &&  that.syncIds[syncIdPutIndex].cover_image_url
+                        ){
                             that.syncIds[syncIdPutIndex].cover_image_upload_id = await that.getCoverImageUploadId()
                         }
           
