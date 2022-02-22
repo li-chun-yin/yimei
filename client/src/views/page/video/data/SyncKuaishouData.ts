@@ -1,6 +1,7 @@
 import { SYNC_STATUS, SYNC_TYPE } from "/@/api/page/model/videoModel";
 import { postVideoSync } from "/@/api/page/video";
 import { getKuaishouIdLists } from "/@/api/page/kuaishou";
+import { Modal } from "ant-design-vue";
 
 export default async (that) => {
     await getKuaishouIdLists().then((res) => {
@@ -42,6 +43,13 @@ export default async (that) => {
             },
             onSync: async () => {
               console.log('syncing', syncIdPutIndex, that.syncIds[syncIdPutIndex])
+
+              if(that.syncIds[syncIdPutIndex].caption === '') {
+                Modal.error({title: '快手视频标题不能为空'})
+                return
+              }
+
+
               that.syncIds[syncIdPutIndex].loading = true;
               try {
                 console.log(that.syncIds[syncIdPutIndex], that.video)

@@ -1,3 +1,4 @@
+import { Modal } from "ant-design-vue";
 import { getDouyinIdLists } from "/@/api/page/douyin";
 import { SYNC_STATUS, SYNC_TYPE } from "/@/api/page/model/videoModel";
 import { postVideoSync } from "/@/api/page/video";
@@ -55,9 +56,14 @@ export default async (that) => {
                 },
                 onSync: async () => {
                     console.log('syncing', syncIdPutIndex, that.syncIds[syncIdPutIndex])
+                    if(that.syncIds[syncIdPutIndex].text === '') {
+                        Modal.error({title: '抖音视频标题不能为空'})
+                        return
+                    }
                     that.syncIds[syncIdPutIndex].loading = true;
                     try {
                         console.log(that.syncIds[syncIdPutIndex], that.video)
+
 
                         if(     !that.syncIds[syncIdPutIndex].cover_image_upload_id
                             &&  that.syncIds[syncIdPutIndex].cover_image_url
@@ -77,9 +83,9 @@ export default async (that) => {
                             }
                         })
                         that.syncIds[syncIdPutIndex].sync_status = SYNC_STATUS.ING
-                        that.syncIds[syncIdPutIndex].loading = that;
+                        that.syncIds[syncIdPutIndex].loading = false;
                     } catch (error) {
-                        that.syncIds[syncIdPutIndex].loading = that;
+                        that.syncIds[syncIdPutIndex].loading = false;
                         console.log(error)
                     }
                 }

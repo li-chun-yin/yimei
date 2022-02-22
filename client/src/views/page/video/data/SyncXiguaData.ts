@@ -1,3 +1,4 @@
+import { Modal } from "ant-design-vue";
 import { SYNC_STATUS, SYNC_TYPE } from "/@/api/page/model/videoModel";
 import { postVideoSync } from "/@/api/page/video";
 import { getXiguaIdLists } from "/@/api/page/xigua";
@@ -43,6 +44,11 @@ export default async (that) => {
             },
             onSync: async () => {
               console.log('syncing', syncIdPutIndex, that.syncIds[syncIdPutIndex])
+              if(that.syncIds[syncIdPutIndex].text === '') {
+                  Modal.error({title: '西瓜视频视频标题不能为空'})
+                  return
+              }
+
               that.syncIds[syncIdPutIndex].loading = true;
               try {
                 console.log(that.syncIds[syncIdPutIndex], that.video)
