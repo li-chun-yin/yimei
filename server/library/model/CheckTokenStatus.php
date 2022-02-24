@@ -12,6 +12,8 @@ use exception\MessageException;
 use model\douyinId\Entity AS DouyinIdEntity;
 use model\douyinId\Manager AS DouyinIdManager;
 use library\douyin\ApiClient AS DouyinApiClient;
+use model\toutiaoId\Entity AS ToutiaoIdEntity;
+use model\toutiaoId\Manager AS ToutiaoIdManager;
 
 /**
  *
@@ -127,5 +129,59 @@ class CheckTokenStatus
         }
 
         throw new MessageException('抖音账号' . $DouyinIdEntity->getNickname() . '授权已过期，需要重新登录.');
+    }
+
+    /**
+     *
+     * @param ToutiaoIdEntity $ToutiaoIdEntity
+     * @throws MessageException
+     */
+    public function toutiao(ToutiaoIdEntity $ToutiaoIdEntity) :void
+    {
+        $now    = time();
+
+        /**
+         * token没有过期
+         */
+        if($ToutiaoIdEntity->getExpiresIn() > $now){
+            return;
+        }
+
+        /**
+         * token过期，但是允许使用refresh_token自动刷新
+         *  - token只能自动刷新5次
+         */
+        if($ToutiaoIdEntity->getRefreshExpiresIn() > $now && $ToutiaoIdEntity->getRefreshCount() < 5){
+            /**
+             * @var DbFactory $Db
+             * @var ToutiaoIdManager $ToutiaoIdManager
+             * @var SettingRepository $SettingRepository
+             */
+            $Db                     = $this->Container->get(DbFactory::class);
+            $ToutiaoIdManager       = $this->Container->get(ToutiaoIdManager::class);
+            $SettingRepository      = $this->Container->get(SettingRepository::class);
+            $SettingEntity          = $SettingRepository->findOneByType(SettingCode::TYPE_DOUYIN);
+
+            $OauthRenewRefreshTokenResponse = DouyinApiClient::request('ToutiaoOauthRenewRefreshToken', [
+                'client_key'                => $SettingEntity->getData()['client_key'],
+                'refresh_token'             => $ToutiaoIdEntity->getRefreshToken(),
+            ]);
+
+            $ToutiaoIdManager->load($ToutiaoIdEntity);
+            $ToutiaoIdManager->updateReauth([
+                'access_token'          => $ToutiaoIdEntity->getAccessToken(),
+                'expires_in'            => $OauthRenewRefreshTokenResponse->get('expires_in') + $now,
+                'refresh_token'         => $OauthRenewRefreshTokenResponse->get('refresh_token'),
+                'refresh_expires_in'    => $ToutiaoIdEntity->getRefreshExpiresIn(),
+                'scope'                 => $ToutiaoIdEntity->getScope(),
+                'refresh_count'         => $ToutiaoIdEntity->getRefreshCount() + 1,
+            ]);
+
+            $Db->getManager()->flush();
+
+            return;
+        }
+
+        throw new MessageException('今日头条账号' . $DouyinIdEntity->getNickname() . '授权已过期，需要重新登录.');
     }
 }

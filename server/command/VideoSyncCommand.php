@@ -248,11 +248,13 @@ class VideoSyncCommand extends CommandAbstract
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::TOUTIAO_SPLIT_SIZE);
 
         /**
-         *
+         * @var CheckTokenStatus $CheckTokenStatus
          * @var ToutiaoIdRepository $ToutiaoIdRepository
          */
         $ToutiaoIdRepository = $this->Container->get(ToutiaoIdRepository::class);
         $ToutiaoIdEntity     = $ToutiaoIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        $CheckTokenStatus   = $this->Container->get(CheckTokenStatus::class);
+        $CheckTokenStatus->toutiao($ToutiaoIdEntity);
 
         $video_id           = '';
         if($split_num < 2){

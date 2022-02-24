@@ -399,4 +399,33 @@ class Entity
     {
         return $this->version;
     }
+    /**
+     * @var int
+     */
+    private $refresh_count = '0';
+
+
+    /**
+     * Set refreshCount.
+     *
+     * @param int $refreshCount
+     *
+     * @return Entity
+     */
+    public function setRefreshCount($refreshCount)
+    {
+        $this->refresh_count = $refreshCount;
+
+        return $this;
+    }
+
+    /**
+     * Get refreshCount.
+     *
+     * @return int
+     */
+    public function getRefreshCount()
+    {
+        return $this->refresh_count;
+    }
 }
