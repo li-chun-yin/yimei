@@ -65,13 +65,13 @@ class Manager
             $this->Entity   = $this->Repository->findOneBySeq($douyin_id);
             if(empty($this->Entity)){
                 throw new SystemException('西瓜视频账号不存在。');
-            } 
+            }
         }
         return $this->Entity;
     }
-    
+
     /**
-     * 
+     *
      * @param string $open_id
      * @return Entity
      */
@@ -98,7 +98,7 @@ class Manager
         $this->Entity->setExpiresIn($data['expires_in']);
         $this->Entity->setRefreshExpiresIn($data['refresh_expires_in']);
         $this->Entity->setRefreshToken($data['refresh_token']);
-        
+
 
         $this->validateCreate();
 
@@ -118,7 +118,7 @@ class Manager
      */
     public function updateUserInfo(array $data) : Manager
     {
-     
+
         $this->Entity->setAvatar($data['avatar']);
         $this->Entity->setNickname($data['nickname']);
 
@@ -126,7 +126,7 @@ class Manager
 
         $this->Entity->setUpdateTime(time());
         $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
-        
+
         $this->Db->getManager()->lock($this->Entity, LockMode::OPTIMISTIC);
 
         return $this;
@@ -134,41 +134,42 @@ class Manager
 
     /**
      * 重新授权
-     * 
+     *
      * @param array $data
      * @return Manager
      */
     public function updateReauth(array $data) : Manager
     {
-        
+
         $this->Entity->setScope($data['scope']);
         $this->Entity->setAccessToken($data['access_token']);
         $this->Entity->setExpiresIn($data['expires_in']);
         $this->Entity->setRefreshExpiresIn($data['refresh_expires_in']);
         $this->Entity->setRefreshToken($data['refresh_token']);
-        
+        $this->Entity->setRefreshCount(isset($data['refresh_count']) ? $data['refresh_count'] : 0);
+
         $this->validateUpdateReauth();
-        
+
         $this->Entity->setUpdateTime(time());
         $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
-        
+
         $this->Db->getManager()->lock($this->Entity, LockMode::OPTIMISTIC);
-        
+
         return $this;
     }
-    
+
     public function validateCreate()
     {
-        
+
     }
 
     public function validateUpdateUserInfo()
     {
-        
+
     }
-    
+
     public function validateUpdateReauth()
     {
-        
+
     }
 }

@@ -324,11 +324,13 @@ class VideoSyncCommand extends CommandAbstract
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::XIGUA_SPLIT_SIZE);
 
         /**
-         *
+         * @var CheckTokenStatus $CheckTokenStatus
          * @var XiguaIdRepository $XiguaIdRepository
          */
         $XiguaIdRepository = $this->Container->get(XiguaIdRepository::class);
         $XiguaIdEntity     = $XiguaIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        $CheckTokenStatus   = $this->Container->get(CheckTokenStatus::class);
+        $CheckTokenStatus->xigua($XiguaIdEntity);
 
         $video_id           = '';
         if($split_num < 2){

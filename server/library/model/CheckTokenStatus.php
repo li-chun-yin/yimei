@@ -14,6 +14,8 @@ use model\douyinId\Manager AS DouyinIdManager;
 use library\douyin\ApiClient AS DouyinApiClient;
 use model\toutiaoId\Entity AS ToutiaoIdEntity;
 use model\toutiaoId\Manager AS ToutiaoIdManager;
+use model\xiguaId\Entity AS XiguaIdEntity;
+use model\xiguaId\Manager AS XiguaIdManager;
 
 /**
  *
@@ -182,6 +184,55 @@ class CheckTokenStatus
             return;
         }
 
-        throw new MessageException('今日头条账号' . $DouyinIdEntity->getNickname() . '授权已过期，需要重新登录.');
+        throw new MessageException('今日头条账号' . $ToutiaoIdEntity->getNickname() . '授权已过期，需要重新登录.');
+    }
+
+    public function xigua(XiguaIdEntity $XiguaIdEntity) :void
+    {
+        $now    = time();
+
+        /**
+         * token没有过期
+         */
+        if($XiguaIdEntity->getExpiresIn() > $now){
+            return;
+        }
+
+        /**
+         * token过期，但是允许使用refresh_token自动刷新
+         *  - token只能自动刷新5次
+         */
+        if($XiguaIdEntity->getRefreshExpiresIn() > $now && $XiguaIdEntity->getRefreshCount() < 5){
+            /**
+             * @var DbFactory $Db
+             * @var XiguaIdManager $XiguaIdManager
+             * @var SettingRepository $SettingRepository
+             */
+            $Db                     = $this->Container->get(DbFactory::class);
+            $XiguaIdManager         = $this->Container->get(XiguaIdManager::class);
+            $SettingRepository      = $this->Container->get(SettingRepository::class);
+            $SettingEntity          = $SettingRepository->findOneByType(SettingCode::TYPE_DOUYIN);
+
+            $OauthRenewRefreshTokenResponse = DouyinApiClient::request('XiguaOauthRenewRefreshToken', [
+                'client_key'                => $SettingEntity->getData()['client_key'],
+                'refresh_token'             => $XiguaIdEntity->getRefreshToken(),
+            ]);
+
+            $XiguaIdManager->load($XiguaIdEntity);
+            $XiguaIdManager->updateReauth([
+                'access_token'          => $XiguaIdEntity->getAccessToken(),
+                'expires_in'            => $OauthRenewRefreshTokenResponse->get('expires_in') + $now,
+                'refresh_token'         => $OauthRenewRefreshTokenResponse->get('refresh_token'),
+                'refresh_expires_in'    => $XiguaIdEntity->getRefreshExpiresIn(),
+                'scope'                 => $XiguaIdEntity->getScope(),
+                'refresh_count'         => $XiguaIdEntity->getRefreshCount() + 1,
+            ]);
+
+            $Db->getManager()->flush();
+
+            return;
+        }
+
+        throw new MessageException('今日头条账号' . $XiguaIdEntity->getNickname() . '授权已过期，需要重新登录.');
     }
 }
