@@ -22,6 +22,7 @@ use model\setting\Repository AS SettingRepository;
 use model\setting\Code AS SettingCode;
 use library\kuaishou\ApiClient AS KuaishouApiClient;
 use exception\SystemException;
+use library\model\CheckTokenStatus;
 
 /**
  * 视频发布到第三方平台
@@ -75,8 +76,9 @@ class VideoSyncCommand extends CommandAbstract
             $UploadSyncDescManager  = $this->Container->get(UploadSyncDescManager::class);
             $UploadSyncDescStatus   = $this->Container->get(UploadSyncDescStatus::class);
 
-            $start_memory   = memory_get_usage() . "\n"; // 36640
-            $Processor->output()->print('Start Memory:' . $start_memory / 1024 / 1024 . "M \r\n");
+            $start_memory   = memory_get_usage(); // 36640
+            $Processor->output()->print('Start Memory:' . number_format($start_memory, 0) . " \r\n");
+
             /**
              * @var UploadSyncEntity $UploadSyncEntity
              */
@@ -124,6 +126,8 @@ class VideoSyncCommand extends CommandAbstract
                         $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncDescEntity->getUploadId());
                         $UploadSyncDescStatus->check($UploadSyncDescEntity);
                         $this->Db->getManager()->flush();
+                    }else{
+                        sleep(30);
                     }
                 } catch (SystemException $e){
                     $Processor->output()->print($e->__toString() . "\r\n");
@@ -131,8 +135,8 @@ class VideoSyncCommand extends CommandAbstract
 
                 $peak_memory    = memory_get_peak_usage();
                 $now_memory     = memory_get_usage();
-                $Processor->output()->print('Peak Memory:' . $peak_memory / 1024 / 1024 . "M \r\n");
-                $Processor->output()->print('Now Memory:' . $now_memory / 1024 / 1024 . "M \r\n");
+                $Processor->output()->print('Peak Memory:' . number_format($peak_memory, 0) . "M \r\n");
+                $Processor->output()->print('Now Memory:' . number_format($now_memory, 0) . "M \r\n");
             }while($while);
         }catch(\Throwable $e){
             $Processor->output()->print($e->__toString());
@@ -147,11 +151,13 @@ class VideoSyncCommand extends CommandAbstract
         $split_num          = floor($UploadSyncDescEntity->getSize() / self::DOUYIN_SPLIT_SIZE);
 
         /**
-         *
+         * @var CheckTokenStatus $CheckTokenStatus
          * @var DouyinIdRepository $DouyinIdRepository
          */
         $DouyinIdRepository = $this->Container->get(DouyinIdRepository::class);
         $DouyinIdEntity     = $DouyinIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
+        $CheckTokenStatus   = $this->Container->get(CheckTokenStatus::class);
+        $CheckTokenStatus->douyin($DouyinIdEntity);
 
         $video_id           = '';
         if($split_num < 2){
@@ -395,12 +401,15 @@ class VideoSyncCommand extends CommandAbstract
         /**
          * @var SettingRepository $SettingRepository
          * @var KuaishouIdRepository $KuaishouIdRepository
+         * @var CheckTokenStatus $CheckTokenStatus
          */
         $SettingRepository      = $this->Container->get(SettingRepository::class);
         $KuaishouIdRepository   = $this->Container->get(KuaishouIdRepository::class);
         $KuaishouIdEntity       = $KuaishouIdRepository->findOneByOpenId($UploadSyncEntity->getUnikey());
         $SettingEntity          = $SettingRepository->findOneByType(SettingCode::TYPE_KUAISHOU);
-//
+        $CheckTokenStatus       = $this->Container->get(CheckTokenStatus::class);
+        $CheckTokenStatus->kuaishou($KuaishouIdEntity);
+
         $OpenapiPhotoStartUploadResonse = KuaishouApiClient::request('OpenapiPhotoStartUpload', [
             'app_id'                    => $SettingEntity->getData()['app_id'],
             'access_token'              => $KuaishouIdEntity->getAccessToken(),

@@ -47,6 +47,13 @@ model\douyinId\Entity:
         default: '0'
         unsigned: true
         comment: 'refresh_token凭证过期时间'
+    refresh_count:
+      type: integer
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: 'refresh_token重新刷新次数'
     scope:
       type: json_array
       nullable: false

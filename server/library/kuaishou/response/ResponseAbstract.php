@@ -66,8 +66,11 @@ abstract class ResponseAbstract implements ResponseInterface
             throw new SystemException(sprintf('快手的响应结果异常[%s]', $json));
         }
 
-        if($decoded_json['result'] != 1){
-            throw new SystemException(sprintf('快手服务器提示:[%s]', $json));
+        if(!isset($decoded_json['result']) || $decoded_json['result'] != 1){
+            throw new SystemException(sprintf(
+                '快手服务器提示:[%s]',
+                isset($decoded_json['error_msg']) ? $decoded_json['error_msg'] : $json)
+            );
         }
 
         foreach($this->getFieldNames() AS $field){
