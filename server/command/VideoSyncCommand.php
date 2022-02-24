@@ -21,6 +21,7 @@ use library\model\UploadSyncDescStatus;
 use model\setting\Repository AS SettingRepository;
 use model\setting\Code AS SettingCode;
 use library\kuaishou\ApiClient AS KuaishouApiClient;
+use exception\SystemException;
 
 /**
  * 视频发布到第三方平台
@@ -60,8 +61,8 @@ class VideoSyncCommand extends CommandAbstract
     public function exec(ProcessorInterface $Processor)
     {
         try{
-            $upload_id  = $this->getOptionValueByProcessor('upload_id', $Processor);
-            $while      = empty($upload_id); // 如果传入$upload_id参数，name不需要循环处理
+            $upload_id      = $this->getOptionValueByProcessor('upload_id', $Processor);
+            $while          = empty($upload_id); // 如果传入$upload_id参数，name不需要循环处理
 
             /**
              * @var UploadSyncDescStatus $UploadSyncDescStatus
@@ -74,49 +75,64 @@ class VideoSyncCommand extends CommandAbstract
             $UploadSyncDescManager  = $this->Container->get(UploadSyncDescManager::class);
             $UploadSyncDescStatus   = $this->Container->get(UploadSyncDescStatus::class);
 
+            $start_memory   = memory_get_usage() . "\n"; // 36640
+            $Processor->output()->print('Start Memory:' . $start_memory / 1024 / 1024 . "M \r\n");
             /**
              * @var UploadSyncEntity $UploadSyncEntity
              */
             do{
-                $UploadSyncEntitys      = [];
-                $UploadSyncDescEntity   = null;
+                try{
+                    $UploadSyncEntitys      = [];
+                    $UploadSyncDescEntity   = null;
 
-                if(empty($upload_id)){
-                    $UploadSyncEntity       = $UploadSyncRepository->findOneByStatusIng();
-                    if(!empty($UploadSyncEntity)){
-                        $UploadSyncEntitys[]    = $UploadSyncEntity;
-                        $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncEntity->getUploadId());
+                    if(empty($upload_id)){
+                        $UploadSyncEntity       = $UploadSyncRepository->findOneByStatusIng();
+                        if(!empty($UploadSyncEntity)){
+                            $UploadSyncEntitys[]    = $UploadSyncEntity;
+                            $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncEntity->getUploadId());
+                        }
+                    }else{
+                        $UploadSyncEntitys      = $UploadSyncRepository->findByUploadId($upload_id);
+                        $UploadSyncDescEntity   = $UploadSyncDescManager->load($upload_id);
                     }
-                }else{
-                    $UploadSyncEntitys      = $UploadSyncRepository->findByUploadId($upload_id);
-                    $UploadSyncDescEntity   = $UploadSyncDescManager->load($upload_id);
-                }
 
-                if(!empty($UploadSyncEntitys)){
-                    foreach($UploadSyncEntitys AS $UploadSyncEntity){
-                        $Processor->output()->print('正在同步:' . $UploadSyncEntity->getUploadId() . "\r\n");
-                        $Processor->output()->print('同步类型:' . Code::TYPES[$UploadSyncEntity->getType()] . "\r\n");
-                        $Processor->output()->print('同步open id:' . $UploadSyncEntity->getUnikey() . "\r\n");
-                        if($UploadSyncEntity->getStatus() == Code::STATUS_DONE){
-                            $Processor->output()->print("已经同步过的视频.\r\n");
-                            continue;
+                    if(!empty($UploadSyncEntitys)){
+                        foreach($UploadSyncEntitys AS $UploadSyncEntity){
+                            try{
+                                $Processor->output()->print('正在同步:' . $UploadSyncEntity->getUploadId() . "\r\n");
+                                $Processor->output()->print('同步类型:' . Code::TYPES[$UploadSyncEntity->getType()] . "\r\n");
+                                $Processor->output()->print('同步open id:' . $UploadSyncEntity->getUnikey() . "\r\n");
+                                if($UploadSyncEntity->getStatus() == Code::STATUS_DONE){
+                                    $Processor->output()->print("已经同步过的视频.\r\n");
+                                    continue;
+                                }
+
+                                $UploadSyncManager->load($UploadSyncEntity);
+                                $sync_response  = $this->{'sync' . $UploadSyncEntity->getType()}($UploadSyncEntity, $UploadSyncDescEntity, $Processor);
+                                $UploadSyncManager->updateSyncDone([
+                                    'sync_response' => $sync_response,
+                                ]);
+                                $this->Db->getManager()->flush();
+
+                                $Processor->output()->print("同步完成.\r\n");
+                            }catch(SystemException $e){
+                                $Processor->output()->print($e->__toString() . "\r\n");
+                            }
                         }
 
-                        $UploadSyncManager->load($UploadSyncEntity);
-                        $sync_response  = $this->{'sync' . $UploadSyncEntity->getType()}($UploadSyncEntity, $UploadSyncDescEntity, $Processor);
-                        $UploadSyncManager->updateSyncDone([
-                            'sync_response' => $sync_response,
-                        ]);
+                        $this->Db->getManager()->getUnitOfWork()->clear();
+                        $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncDescEntity->getUploadId());
+                        $UploadSyncDescStatus->check($UploadSyncDescEntity);
                         $this->Db->getManager()->flush();
-
-                        $Processor->output()->print("同步完成.\r\n");
                     }
-
-                    $this->Db->getManager()->getUnitOfWork()->clear();
-                    $UploadSyncDescEntity   = $UploadSyncDescManager->load($UploadSyncDescEntity->getUploadId());
-                    $UploadSyncDescStatus->check($UploadSyncDescEntity);
-                    $this->Db->getManager()->flush();
+                } catch (SystemException $e){
+                    $Processor->output()->print($e->__toString() . "\r\n");
                 }
+
+                $peak_memory    = memory_get_peak_usage();
+                $now_memory     = memory_get_usage();
+                $Processor->output()->print('Peak Memory:' . $peak_memory / 1024 / 1024 . "M \r\n");
+                $Processor->output()->print('Now Memory:' . $now_memory / 1024 / 1024 . "M \r\n");
             }while($while);
         }catch(\Throwable $e){
             $Processor->output()->print($e->__toString());
