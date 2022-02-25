@@ -20,6 +20,10 @@
               </template>
               <template #description>
                 <Time :value="item.update_time" />
+                <div>
+                  <a-button v-if="item.disabled == 0" block size="small" @click="doDisable(item)">停用该账号</a-button>
+                  <a-button v-else block type="danger" size="small" @click="doEnable(item)">启用该账号</a-button>
+                </div>
               </template>
             </a-card-meta>
           </a-card>
@@ -32,8 +36,8 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { Time } from '/@/components/Time';
-  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText } from 'ant-design-vue'
-  import { getToutiaoOauthFormData, getToutiaoIdLists } from '/@/api/page/toutiao';
+  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
+  import { getToutiaoOauthFormData, getToutiaoIdLists, postToutiaoIdDisabled } from '/@/api/page/toutiao';
   import { GetToutiaoIdResponse } from '/@/api/page/model/toutiaoModel';
   
 
@@ -73,9 +77,23 @@
       }
     },
     created() {
-      getToutiaoIdLists().then((res) => {
+      getToutiaoIdLists({page: 1, limit: 99999999, disabled: 'all'}).then((res) => {
         this.toutiaoIds = res
       })
+    },
+    methods: {
+      doDisable(item){
+        postToutiaoIdDisabled({open_id: item.open_id, disabled: 1}).then(_ => {
+          item.disabled = 1
+          message.success("账号已经被停用.")
+        });
+      },
+      doEnable(item){
+        postToutiaoIdDisabled({open_id: item.open_id, disabled: 0}).then(_ => {
+          item.disabled = 0
+          message.success("账号已经被启用.")
+        });
+      }
     }
   })
 </script>

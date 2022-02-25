@@ -45,4 +45,23 @@ export const getKuaishouIdLists = (params = {page : 1, limit : 999999999}) => {
     url: '',
     params: { ...params, api_name: 'kuaishou.id-list' }
   });
-}  
+}
+
+/**
+ * @description: Post kuaishou set info
+ */
+export const postKuaishouIdDisabled = (params : { open_id: string, disabled : number }, mode: ErrorMessageMode = 'modal') => {
+  return defHttp.post<{status:String}>(
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      url: '',
+      data : qs.stringify({...params, api_name: 'kuaishou.id-disabled'}),
+    },
+    {
+      errorMessageMode: mode,
+    },
+  );
+}
+

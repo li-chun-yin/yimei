@@ -53,6 +53,24 @@ export const getDouyinIdLists = (params = {page : 1, limit : 999999999}) => {
   });
 } 
 
+/**
+ * @description: Post douyin set info
+ */
+ export const postDouyinIdDisabled = (params : { open_id: string, disabled : number }, mode: ErrorMessageMode = 'modal') => {
+  return defHttp.post<{status:String}>(
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      url: '',
+      data : qs.stringify({...params, api_name: 'douyin.id-disabled'}),
+    },
+    {
+      errorMessageMode: mode,
+    },
+  );
+}
+
 
 export const searchDouyiPois = (params : SearchDouyinPoisParam = {city: "上海", count: 20, cursor: 0, keyword: "附近"}) => {
   return defHttp.get<SearchDouyinPoisResponse>({ 

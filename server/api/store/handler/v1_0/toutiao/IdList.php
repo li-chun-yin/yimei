@@ -13,7 +13,7 @@ use model\toutiaoId\Entity;
 
 /**
  * @name 今日头条账号列表
- * @desc 
+ * @desc
  * @request api\store\parameter\v1_0\toutiao\idList\IdListRequest
  * @response api\store\parameter\v1_0\toutiao\idList\IdListResponse
  *
@@ -23,19 +23,19 @@ use model\toutiaoId\Entity;
 class IdList implements ApiClassInterface
 {
     /**
-     * 
+     *
      * @var ToutiaoIdRepository $ToutiaoIdRepository
      * @var ServerRequestInterface $Request
      */
     private $ToutiaoIdRepository, $Request;
-    
+
     /**
      */
     public function __construct(ToutiaoIdRepository $ToutiaoIdRepository, ServerRequestInterface $Request){
         $this->ToutiaoIdRepository  = $ToutiaoIdRepository;
         $this->Request              = $Request;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -45,7 +45,7 @@ class IdList implements ApiClassInterface
     {
         try {
             /**
-             * 
+             *
              * @var Entity $toutiaoIdEntity
              */
             $Paginator  = $this->ToutiaoIdRepository->getPageLists($this->Request);
@@ -56,6 +56,7 @@ class IdList implements ApiClassInterface
                     'nickname'      => $toutiaoIdEntity->getNickname(),
                     'avatar'        => $toutiaoIdEntity->getAvatar(),
                     'update_time'   => $toutiaoIdEntity->getUpdateTime(),
+                    'disabled'      => $toutiaoIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([

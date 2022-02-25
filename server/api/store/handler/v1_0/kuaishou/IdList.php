@@ -56,6 +56,7 @@ class IdList implements ApiClassInterface
                     'name'          => $KuaishouIdEntity->getName(),
                     'head'          => $KuaishouIdEntity->getHead(),
                     'update_time'   => $KuaishouIdEntity->getUpdateTime(),
+                    'disabled'      => $KuaishouIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([

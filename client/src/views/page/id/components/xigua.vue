@@ -1,39 +1,43 @@
 <template>
-    <a-card :bordered="false">
-        <template #title>
-        西瓜视频账号
-        </template>
-        <template #extra>
-        <a-button @click="openBindXiguaWindow">添加账号</a-button>
-        </template>
+  <a-card :bordered="false">
+    <template #title>
+      西瓜视频账号
+    </template>
+    <template #extra>
+      <a-button @click="openBindXiguaWindow">添加账号</a-button>
+    </template>
 
-        <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 12 }" :dataSource="xiguaIds.items">
-        <template #renderItem="{ item }">
-            <a-list-item>
-            <a-card>
-                <template #cover>
-                <a-image :src="item.avatar" />
-                </template>
-                <a-card-meta>
-                <template #title>
-                    <TypographyText :content="item.nickname" />
-                </template>
-                <template #description>
-                    <Time :value="item.update_time" />
-                </template>
-                </a-card-meta>
-            </a-card>
-            </a-list-item>
-        </template>
-        </a-list>
-    </a-card>
+    <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 12 }" :dataSource="xiguaIds.items">
+      <template #renderItem="{ item }">
+        <a-list-item>
+          <a-card>
+            <template #cover>
+            <a-image :src="item.avatar" />
+            </template>
+            <a-card-meta>
+            <template #title>
+              <TypographyText :content="item.nickname" />
+            </template>
+            <template #description>
+              <Time :value="item.update_time" />
+              <div>
+                <a-button v-if="item.disabled == 0" block size="small" @click="doDisable(item)">停用该账号</a-button>
+                <a-button v-else block type="danger" size="small" @click="doEnable(item)">启用该账号</a-button>
+              </div>
+            </template>
+            </a-card-meta>
+          </a-card>
+        </a-list-item>
+      </template>
+    </a-list>
+  </a-card>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { Time } from '/@/components/Time';
-  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText } from 'ant-design-vue'
-  import { getXiguaOauthFormData, getXiguaIdLists } from '/@/api/page/xigua';
+  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
+  import { getXiguaOauthFormData, getXiguaIdLists, postXiguaIdDisabled } from '/@/api/page/xigua';
   import { GetXiguaIdResponse } from '/@/api/page/model/xiguaModel';
   
 
@@ -73,9 +77,23 @@
       }
     },
     created() {
-      getXiguaIdLists().then((res) => {
+      getXiguaIdLists({page: 1, limit: 99999999, disabled: 'all'}).then((res) => {
         this.xiguaIds = res
       })
+    },
+    methods: {
+      doDisable(item){
+        postXiguaIdDisabled({open_id: item.open_id, disabled: 1}).then(_ => {
+          item.disabled = 1
+          message.success("账号已经被停用.")
+        });
+      },
+      doEnable(item){
+        postXiguaIdDisabled({open_id: item.open_id, disabled: 0}).then(_ => {
+          item.disabled = 0
+          message.success("账号已经被启用.")
+        });
+      }
     }
   })
 </script>

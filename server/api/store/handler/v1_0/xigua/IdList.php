@@ -13,7 +13,7 @@ use model\xiguaId\Entity;
 
 /**
  * @name 西瓜视频账号列表
- * @desc 
+ * @desc
  * @request api\store\parameter\v1_0\xigua\idList\IdListRequest
  * @response api\store\parameter\v1_0\xigua\idList\IdListResponse
  *
@@ -23,19 +23,19 @@ use model\xiguaId\Entity;
 class IdList implements ApiClassInterface
 {
     /**
-     * 
+     *
      * @var XiguaIdRepository $XiguaIdRepository
      * @var ServerRequestInterface $Request
      */
     private $XiguaIdRepository, $Request;
-    
+
     /**
      */
     public function __construct(XiguaIdRepository $XiguaIdRepository, ServerRequestInterface $Request){
         $this->XiguaIdRepository    = $XiguaIdRepository;
         $this->Request              = $Request;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -45,7 +45,7 @@ class IdList implements ApiClassInterface
     {
         try {
             /**
-             * 
+             *
              * @var Entity $xiguaIdEntity
              */
             $Paginator  = $this->XiguaIdRepository->getPageLists($this->Request);
@@ -56,6 +56,7 @@ class IdList implements ApiClassInterface
                     'nickname'      => $xiguaIdEntity->getNickname(),
                     'avatar'        => $xiguaIdEntity->getAvatar(),
                     'update_time'   => $xiguaIdEntity->getUpdateTime(),
+                    'disabled'      => $xiguaIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([

@@ -164,6 +164,26 @@ class Manager
         return $this;
     }
 
+    /**
+     *
+     * @param bool $disabled
+     * @return Manager
+     */
+    public function updateDisabled(bool $disabled) : Manager
+    {
+
+        $this->Entity->setDisabled((int)$disabled);
+
+        $this->validateUpdateDisabled();
+
+        $this->Entity->setUpdateTime(time());
+        $this->Entity->setUpdateIp($this->ServerRequest->getClientIp());
+
+        $this->Db->getManager()->lock($this->Entity, LockMode::OPTIMISTIC);
+
+        return $this;
+    }
+
     public function validateCreate()
     {
 
@@ -175,6 +195,11 @@ class Manager
     }
 
     public function validateUpdateReauth()
+    {
+
+    }
+
+    public function validateUpdateDisabled()
     {
 
     }

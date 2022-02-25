@@ -13,7 +13,7 @@ use model\douyinId\Entity;
 
 /**
  * @name 抖音账号列表
- * @desc 
+ * @desc
  * @request api\store\parameter\v1_0\douyin\idList\IdListRequest
  * @response api\store\parameter\v1_0\douyin\idList\IdListResponse
  *
@@ -23,19 +23,19 @@ use model\douyinId\Entity;
 class IdList implements ApiClassInterface
 {
     /**
-     * 
+     *
      * @var DouyinIdRepository $DouyinIdRepository
      * @var ServerRequestInterface $Request
      */
     private $DouyinIdRepository, $Request;
-    
+
     /**
      */
     public function __construct(DouyinIdRepository $DouyinIdRepository, ServerRequestInterface $Request){
         $this->DouyinIdRepository   = $DouyinIdRepository;
         $this->Request              = $Request;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -45,7 +45,7 @@ class IdList implements ApiClassInterface
     {
         try {
             /**
-             * 
+             *
              * @var Entity $douyinIdEntity
              */
             $Paginator  = $this->DouyinIdRepository->getPageLists($this->Request);
@@ -55,6 +55,7 @@ class IdList implements ApiClassInterface
                     'open_id'       => $douyinIdEntity->getOpenId(),
                     'nickname'      => $douyinIdEntity->getNickname(),
                     'avatar'        => $douyinIdEntity->getAvatar(),
+                    'disabled'      => $douyinIdEntity->getDisabled(),
                     'update_time'   => $douyinIdEntity->getUpdateTime(),
                 ];
             }

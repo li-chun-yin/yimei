@@ -20,6 +20,10 @@
               </template>
               <template #description>
                 <Time :value="item.update_time" />
+                <div>
+                  <a-button v-if="item.disabled == 0" block size="small" @click="doDisable(item)">停用该账号</a-button>
+                  <a-button v-else block type="danger" size="small" @click="doEnable(item)">启用该账号</a-button>
+                </div>
               </template>
             </a-card-meta>
           </a-card>
@@ -32,8 +36,8 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { Time } from '/@/components/Time';
-  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText } from 'ant-design-vue'
-  import { getDouyinOauthFormData, getDouyinIdLists } from '/@/api/page/douyin';
+  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
+  import { getDouyinOauthFormData, getDouyinIdLists, postDouyinIdDisabled } from '/@/api/page/douyin';
   import { GetDouyinIdResponse } from '/@/api/page/model/douyinModel';
   
 
@@ -74,9 +78,23 @@
       }
     },
     created() {
-      getDouyinIdLists().then((res) => {
+      getDouyinIdLists({page: 1, limit: 99999999, disabled: 'all'}).then((res) => {
         this.douyinIds = res
       })
+    },
+    methods: {
+      doDisable(item){
+        postDouyinIdDisabled({open_id: item.open_id, disabled: 1}).then(_ => {
+          item.disabled = 1
+          message.success("账号已经被停用.")
+        });
+      },
+      doEnable(item){
+        postDouyinIdDisabled({open_id: item.open_id, disabled: 0}).then(_ => {
+          item.disabled = 0
+          message.success("账号已经被启用.")
+        });
+      }
     }
   })
 </script>
