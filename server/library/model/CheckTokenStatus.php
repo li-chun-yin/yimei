@@ -120,7 +120,9 @@ class CheckTokenStatus
                 'access_token'          => $DouyinIdEntity->getAccessToken(),
                 'expires_in'            => $OauthRenewRefreshTokenResponse->get('expires_in') + $now,
                 'refresh_token'         => $OauthRenewRefreshTokenResponse->get('refresh_token'),
-                'refresh_expires_in'    => $DouyinIdEntity->getRefreshExpiresIn(),
+                'refresh_expires_in'    => $DouyinIdEntity->getRefreshCount() > 3
+                                        ? $DouyinIdEntity->getRefreshExpiresIn()
+                                        : 86400 * 30 + $now,
                 'scope'                 => $DouyinIdEntity->getScope(),
                 'refresh_count'         => $DouyinIdEntity->getRefreshCount() + 1,
             ]);
@@ -174,7 +176,9 @@ class CheckTokenStatus
                 'access_token'          => $ToutiaoIdEntity->getAccessToken(),
                 'expires_in'            => $OauthRenewRefreshTokenResponse->get('expires_in') + $now,
                 'refresh_token'         => $OauthRenewRefreshTokenResponse->get('refresh_token'),
-                'refresh_expires_in'    => $ToutiaoIdEntity->getRefreshExpiresIn(),
+                'refresh_expires_in'    => $ToutiaoIdEntity->getRefreshCount() > 3
+                                        ? $ToutiaoIdEntity->getRefreshExpiresIn()
+                                        : 86400 * 30 + $now,
                 'scope'                 => $ToutiaoIdEntity->getScope(),
                 'refresh_count'         => $ToutiaoIdEntity->getRefreshCount() + 1,
             ]);
@@ -223,7 +227,9 @@ class CheckTokenStatus
                 'access_token'          => $XiguaIdEntity->getAccessToken(),
                 'expires_in'            => $OauthRenewRefreshTokenResponse->get('expires_in') + $now,
                 'refresh_token'         => $OauthRenewRefreshTokenResponse->get('refresh_token'),
-                'refresh_expires_in'    => $XiguaIdEntity->getRefreshExpiresIn(),
+                'refresh_expires_in'    => $XiguaIdEntity->getRefreshCount() > 3
+                                        ? $XiguaIdEntity->getRefreshExpiresIn()
+                                        : 86400 * 30 + $now,
                 'scope'                 => $XiguaIdEntity->getScope(),
                 'refresh_count'         => $XiguaIdEntity->getRefreshCount() + 1,
             ]);

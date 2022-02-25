@@ -51,12 +51,13 @@ class IdList implements ApiClassInterface
             $Paginator  = $this->KuaishouIdRepository->getPageLists($this->Request);
             $items      = [];
             foreach($Paginator->getIterator() AS $KuaishouIdEntity){
-                $items[]            = [
-                    'open_id'       => $KuaishouIdEntity->getOpenId(),
-                    'name'          => $KuaishouIdEntity->getName(),
-                    'head'          => $KuaishouIdEntity->getHead(),
-                    'update_time'   => $KuaishouIdEntity->getUpdateTime(),
-                    'disabled'      => $KuaishouIdEntity->getDisabled(),
+                $items[]                = [
+                    'open_id'           => $KuaishouIdEntity->getOpenId(),
+                    'name'              => $KuaishouIdEntity->getName(),
+                    'head'              => $KuaishouIdEntity->getHead(),
+                    'update_time'       => $KuaishouIdEntity->getUpdateTime(),
+                    'expire_in_ymdhis'  => date('Y-m-d H:i:s', $KuaishouIdEntity->getRefreshTokenExpiresIn()),
+                    'disabled'          => $KuaishouIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([

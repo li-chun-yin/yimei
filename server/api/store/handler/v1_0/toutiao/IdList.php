@@ -51,12 +51,13 @@ class IdList implements ApiClassInterface
             $Paginator  = $this->ToutiaoIdRepository->getPageLists($this->Request);
             $items      = [];
             foreach($Paginator->getIterator() AS $toutiaoIdEntity){
-                $items[]            = [
-                    'open_id'       => $toutiaoIdEntity->getOpenId(),
-                    'nickname'      => $toutiaoIdEntity->getNickname(),
-                    'avatar'        => $toutiaoIdEntity->getAvatar(),
-                    'update_time'   => $toutiaoIdEntity->getUpdateTime(),
-                    'disabled'      => $toutiaoIdEntity->getDisabled(),
+                $items[]                = [
+                    'open_id'           => $toutiaoIdEntity->getOpenId(),
+                    'nickname'          => $toutiaoIdEntity->getNickname(),
+                    'avatar'            => $toutiaoIdEntity->getAvatar(),
+                    'expire_in_ymdhis'  => date('Y-m-d H:i:s', $toutiaoIdEntity->getRefreshExpiresIn()),
+                    'update_time'       => $toutiaoIdEntity->getUpdateTime(),
+                    'disabled'          => $toutiaoIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([

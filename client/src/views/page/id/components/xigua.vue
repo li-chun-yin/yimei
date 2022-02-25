@@ -7,12 +7,13 @@
       <a-button @click="openBindXiguaWindow">添加账号</a-button>
     </template>
 
-    <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 12 }" :dataSource="xiguaIds.items">
+    <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 9 }" :dataSource="xiguaIds.items">
       <template #renderItem="{ item }">
         <a-list-item>
           <a-card>
             <template #cover>
-            <a-image :src="item.avatar" />
+              <a-image :src="item.avatar" />
+              <a-tag color="green">有效期:{{item.expire_in_ymdhis}}</a-tag>
             </template>
             <a-card-meta>
             <template #title>
@@ -36,7 +37,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { Time } from '/@/components/Time';
-  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
+  import { Tag, Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
   import { getXiguaOauthFormData, getXiguaIdLists, postXiguaIdDisabled } from '/@/api/page/xigua';
   import { GetXiguaIdResponse } from '/@/api/page/model/xiguaModel';
   
@@ -50,7 +51,8 @@
       [Card.name]: Card, 
       [CardMeta.name]: CardMeta, 
       [Button.name]:Button, 
-      [Image.name]: Image
+      [Image.name]: Image,
+      [Tag.name]: Tag
     },
     setup() {
       const oauthXiguaFormData = getXiguaOauthFormData()

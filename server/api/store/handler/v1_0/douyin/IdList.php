@@ -51,12 +51,13 @@ class IdList implements ApiClassInterface
             $Paginator  = $this->DouyinIdRepository->getPageLists($this->Request);
             $items      = [];
             foreach($Paginator->getIterator() AS $douyinIdEntity){
-                $items[]            = [
-                    'open_id'       => $douyinIdEntity->getOpenId(),
-                    'nickname'      => $douyinIdEntity->getNickname(),
-                    'avatar'        => $douyinIdEntity->getAvatar(),
-                    'disabled'      => $douyinIdEntity->getDisabled(),
-                    'update_time'   => $douyinIdEntity->getUpdateTime(),
+                $items[]                = [
+                    'open_id'           => $douyinIdEntity->getOpenId(),
+                    'nickname'          => $douyinIdEntity->getNickname(),
+                    'avatar'            => $douyinIdEntity->getAvatar(),
+                    'disabled'          => $douyinIdEntity->getDisabled(),
+                    'expire_in_ymdhis'  => date('Y-m-d H:i:s', $douyinIdEntity->getRefreshExpiresIn()),
+                    'update_time'       => $douyinIdEntity->getUpdateTime(),
                 ];
             }
             return new IdListResponse([

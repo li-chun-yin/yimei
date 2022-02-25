@@ -7,12 +7,13 @@
       <a-button @click="openBindWindow">添加账号</a-button>
     </template>
 
-    <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 12 }" :dataSource="kuaishouIds.items">
+    <a-list :grid="{ gutter: 5, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 9 }" :dataSource="kuaishouIds.items">
       <template #renderItem="{ item }">
         <a-list-item>
           <a-card>
             <template #cover>
               <a-image :src="item.head" />
+              <a-tag color="green">有效期:{{item.expire_in_ymdhis}}</a-tag>
             </template>
             <a-card-meta>
               <template #title>
@@ -36,7 +37,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { Time } from '/@/components/Time';
-  import { Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
+  import { Tag, Card, CardMeta, Button, List, ListItem, Image, TypographyText, message } from 'ant-design-vue'
   import { getKuaishouOauthFormData, getKuaishouIdLists, postKuaishouIdDisabled } from '/@/api/page/kuaishou'; 
   import { GetKuaishouIdResponse } from '/@/api/page/model/kuaishouModel'; 
   
@@ -50,7 +51,8 @@
       [Card.name]: Card, 
       [CardMeta.name]: CardMeta, 
       [Button.name]:Button, 
-      [Image.name]: Image
+      [Image.name]: Image,
+      [Tag.name]: Tag
     },
     setup() {
       const oauthFormData = getKuaishouOauthFormData()

@@ -51,12 +51,13 @@ class IdList implements ApiClassInterface
             $Paginator  = $this->XiguaIdRepository->getPageLists($this->Request);
             $items      = [];
             foreach($Paginator->getIterator() AS $xiguaIdEntity){
-                $items[]            = [
-                    'open_id'       => $xiguaIdEntity->getOpenId(),
-                    'nickname'      => $xiguaIdEntity->getNickname(),
-                    'avatar'        => $xiguaIdEntity->getAvatar(),
-                    'update_time'   => $xiguaIdEntity->getUpdateTime(),
-                    'disabled'      => $xiguaIdEntity->getDisabled(),
+                $items[]                = [
+                    'open_id'           => $xiguaIdEntity->getOpenId(),
+                    'nickname'          => $xiguaIdEntity->getNickname(),
+                    'avatar'            => $xiguaIdEntity->getAvatar(),
+                    'expire_in_ymdhis'  => date('Y-m-d H:i:s', $xiguaIdEntity->getRefreshExpiresIn()),
+                    'update_time'       => $xiguaIdEntity->getUpdateTime(),
+                    'disabled'          => $xiguaIdEntity->getDisabled(),
                 ];
             }
             return new IdListResponse([
