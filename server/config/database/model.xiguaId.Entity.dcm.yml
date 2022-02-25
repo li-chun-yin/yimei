@@ -73,6 +73,13 @@ model\xiguaId\Entity:
       options:
         default: ''
         comment: ''
+    disabled:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '0:启用, 1:禁用'
     create_time:
       type: integer
       nullable: false

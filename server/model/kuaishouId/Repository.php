@@ -58,7 +58,7 @@ class Repository
     }
 
     /**
-     *
+     * 默认查询可用的账号
      * @param ServerRequestInterface $Request
      * @return array
      */
@@ -69,6 +69,7 @@ class Repository
          */
         $page               = $Request->getRequestParam('page', 1);
         $limit              = $Request->getRequestParam('limit', 20);
+        $disabled           = $Request->getRequestParam('disabled', '0');
 
         /**
          * query builder
@@ -85,6 +86,13 @@ class Repository
          */
         $andx       = $queryBuilder->expr()->andX();
         $has_where  = false;
+
+        if(strlen($disabled) == 1){
+            $andx->add($queryBuilder->expr()->eq('t.disabled', ':disabled'));
+            $queryBuilder->setParameter('disabled', $disabled);
+            $has_where = true;
+        }
+
         if($has_where == true){
             $queryBuilder->where($andx);
         }
@@ -96,12 +104,12 @@ class Repository
     }
 
     /**
-     *
+     * 返回可用的open_id集合
      * @return array
      */
     public function getAllOpenIds() : array
     {
-        $data = $this->Repository->createQueryBuilder('t')->select(['t.open_id'])->getQuery()->getArrayResult();
+        $data = $this->Repository->createQueryBuilder('t')->where('t.disabled = 0')->select(['t.open_id'])->getQuery()->getArrayResult();
         return empty($data) ? [] : array_column($data, 'open_id');
     }
 }

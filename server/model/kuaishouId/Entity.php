@@ -544,4 +544,33 @@ class Entity
     {
         return $this->version;
     }
+    /**
+     * @var int
+     */
+    private $disabled = '0';
+
+
+    /**
+     * Set disabled.
+     *
+     * @param int $disabled
+     *
+     * @return Entity
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+
+        return $this;
+    }
+
+    /**
+     * Get disabled.
+     *
+     * @return int
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
 }

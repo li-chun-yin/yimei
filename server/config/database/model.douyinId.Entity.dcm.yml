@@ -115,6 +115,13 @@ model\douyinId\Entity:
         default: '0'
         unsigned: true
         comment: '性别: * `0` - 未知 * `1` - 男性 * `2` - 女性'
+    disabled:
+      type: smallint
+      nullable: false
+      options:
+        default: '0'
+        unsigned: true
+        comment: '0:启用, 1:禁用'
     create_time:
       type: integer
       nullable: false
